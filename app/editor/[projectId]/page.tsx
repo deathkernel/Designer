@@ -392,7 +392,7 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
                 <span className="forge-inspector-label">COLUMNS</span>
                 {selectedTable.columns.map((column) => (
                   <div className="forge-inspector-column" key={column.id}>
-                    <span>{column.primaryKey ? "⌑" : "·"}</span><b>{column.name}</b><small>{column.type}</small>
+                    <span className={column.primaryKey ? "is-pk" : column.unique ? "is-uq" : "is-column"}>{column.primaryKey ? "PK" : column.unique ? "UQ" : "·"}</span><b>{column.name}</b><small>{column.type}</small>
                   </div>
                 ))}
                 <button className="forge-inspector-action" onClick={() => { setView("tables"); }}><Table2 size={13} /> Edit table columns</button>
@@ -471,9 +471,9 @@ function ColumnRow({ column, projectId, tableId, updateColumn, deleteColumn }: {
         {SQL_COLUMN_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
       </select>
       <div className="forge-column-rules">
-        <label><input type="checkbox" checked={column.primaryKey} onChange={(event) => updateColumn(projectId, tableId, column.id, { primaryKey: event.target.checked, nullable: event.target.checked ? false : column.nullable })} /> PK</label>
-        <label><input type="checkbox" checked={!column.nullable} onChange={(event) => updateColumn(projectId, tableId, column.id, { nullable: !event.target.checked })} /> NN</label>
-        <label><input type="checkbox" checked={column.unique} onChange={(event) => updateColumn(projectId, tableId, column.id, { unique: event.target.checked })} /> UQ</label>
+        <label className="rule-pk"><input type="checkbox" checked={column.primaryKey} onChange={(event) => updateColumn(projectId, tableId, column.id, { primaryKey: event.target.checked, nullable: event.target.checked ? false : column.nullable })} /> PK</label>
+        <label className="rule-nn"><input type="checkbox" checked={!column.nullable} onChange={(event) => updateColumn(projectId, tableId, column.id, { nullable: !event.target.checked })} /> NN</label>
+        <label className="rule-uq"><input type="checkbox" checked={column.unique} onChange={(event) => updateColumn(projectId, tableId, column.id, { unique: event.target.checked })} /> UQ</label>
       </div>
       <button className="forge-icon-danger" title="Delete column" onClick={() => deleteColumn(projectId, tableId, column.id)}><Trash2 size={13} /></button>
       {column.type === "VARCHAR" && (
