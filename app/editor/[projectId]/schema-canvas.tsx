@@ -63,11 +63,13 @@ const nodeTypes = { table: TableNodeCard };
 export default function SchemaCanvas({
   project,
   onPositionChange,
-  onAddTable
+  onAddTable,
+  onSelectTable
 }: {
   project: SqlProject;
   onPositionChange: (tableId: string, position: { x: number; y: number }) => void;
   onAddTable: () => void;
+  onSelectTable: (tableId: string) => void;
 }) {
   const initialNodes = useMemo<TableNodeType[]>(
     () => project.tables.map((table) => ({
@@ -134,6 +136,7 @@ export default function SchemaCanvas({
           nodeTypes={nodeTypes}
           onNodesChange={handleNodesChange}
           onNodeDragStop={handleNodeDragStop}
+          onNodeClick={(_event, node) => onSelectTable(node.id)}
           fitView
           fitViewOptions={{ padding: 0.2 }}
           minZoom={0.25}
