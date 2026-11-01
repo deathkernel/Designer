@@ -536,3 +536,148 @@ footer i{color:#a9c5ed}
 @media(prefers-reduced-motion:no-preference){
  .nav,.nav.active,.project-row,.forge-nav-item,.forge-primary,.primary{transition:background-color .16s ease,border-color .16s ease,color .16s ease}
 }
+
+
+/* Dashboard structural redesign: compact, data-first product workspace */
+.pf-dashboard{min-height:100vh;background:#f5f7fa;color:#17202b;color-scheme:light}
+.pf-sidebar{width:236px;padding:21px 14px 13px;background:#fff;border-right:1px solid #e4e8ee;color:#202a36}
+.pf-brand{padding:0 7px 24px}
+.pf-brand .brand-symbol{width:33px;height:33px;border-radius:8px;background:#e7eef8;color:#35577f}
+.pf-brand b{color:#202a36;font-size:15px}
+.pf-brand small{color:#8b96a4;font-size:8px;letter-spacing:1.05px}
+.pf-workspace{margin-bottom:23px;border-color:#e4e8ee;border-radius:7px;background:#f8fafc}
+.pf-workspace .workspace-mark{background:#e7edf5;color:#45617f;border-radius:6px}
+.pf-workspace b{color:#273443;font-size:10px}
+.pf-workspace small{color:#8a95a3;font-size:9px}
+.pf-workspace>svg{color:#8a95a3}
+.pf-sidebar .nav-caption{padding-bottom:8px;color:#9aa4b1;font-size:8px;letter-spacing:1px}
+.pf-sidebar .nav{min-height:34px;border-radius:6px;color:#5e6a79;font-size:10px}
+.pf-sidebar .nav:hover{background:#f2f5f8;color:#263547}
+.pf-sidebar .nav.active{background:#edf2f8;color:#34577e}
+.pf-sidebar .nav.active svg{color:#426991}
+.pf-sidebar .nav-count{color:#8793a1}
+.pf-sidebar .tool-caption{margin-top:22px}
+.pf-sidebar .sidebar-bottom .nav{margin-bottom:2px}
+.pf-storage{display:flex;align-items:center;gap:9px;margin:13px 1px;padding:10px 8px;border:1px solid #e2e9e4;border-radius:7px;background:#f6faf7;color:#547761}
+.pf-storage-icon{width:26px;height:26px;display:grid;place-items:center;border-radius:6px;background:#e8f1eb}
+.pf-storage>span:nth-child(2){flex:1;display:grid;gap:3px}
+.pf-storage b{color:#46634f;font-size:9px}
+.pf-storage small{color:#829487;font-size:8px}
+.pf-storage>i{width:6px;height:6px;border-radius:50%;background:#6eae82}
+.pf-profile{border-top-color:#e8ebef}
+.pf-profile .profile-mark{background:#e7edf5;color:#45617f}
+.pf-profile b{color:#344252;font-size:9px}
+.pf-profile small{color:#8b96a4;font-size:8px}
+.pf-main{margin-left:236px;background:#f5f7fa;color:#17202b}
+.pf-topbar{height:57px;padding:0 30px;background:#fff;border-bottom-color:#e6eaf0}
+.pf-topbar .crumb{color:#8a95a3;font-size:10px}
+.pf-topbar .crumb span{color:#c0c8d2}
+.pf-topbar .crumb b{color:#344253;font-weight:600}
+.pf-top-actions{display:flex;align-items:center;gap:13px}
+.pf-global-search{height:30px;width:205px;display:flex;align-items:center;gap:7px;padding:0 8px;border:1px solid #e1e6ed;border-radius:6px;background:#fbfcfd;color:#8b96a4}
+.pf-global-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#293646;font-size:9px}
+.pf-global-search input::placeholder{color:#9aa4b0}
+.pf-global-search kbd{display:flex;align-items:center;gap:2px;padding:2px 4px;border:1px solid #e3e7ed;border-radius:4px;background:#fff;color:#8c97a4;font:8px "DM Mono"}
+.pf-connection{display:flex;align-items:center;gap:6px;color:#718276;font-size:9px;white-space:nowrap}
+.pf-connection i{width:6px;height:6px;border-radius:50%;background:#72ad83}
+.pf-topbar .icon-btn{width:29px;height:29px;color:#788594}
+.pf-topbar .icon-btn:hover{border-color:#e2e7ed;background:#f5f7fa}
+.pf-topbar .user-mark{width:27px;height:27px;border-radius:6px;background:#e7edf5;color:#45617f;font-size:10px}
+.pf-content{max-width:1440px;padding:33px 34px 22px}
+.pf-page-title{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:23px}
+.pf-page-title .eyebrow{color:#78899d;font-size:8px;letter-spacing:1.05px}
+.pf-page-title h1{margin:7px 0 4px;color:#1d2937;font:700 25px/1.2 Manrope;letter-spacing:-.7px}
+.pf-page-title p{margin:0;color:#778493;font-size:10px}
+.pf-dashboard .primary,.pf-dashboard .secondary{min-height:33px;border-radius:6px;font-size:9px;font-weight:600}
+.pf-dashboard .primary{border-color:#263c55;background:#263c55;color:#fff}
+.pf-dashboard .primary:hover{border-color:#344f6e;background:#344f6e;transform:none}
+.pf-dashboard .secondary{border-color:#d9e0e8;background:#fff;color:#415164}
+.pf-dashboard .secondary:hover{background:#f5f7fa}
+.pf-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:30px}
+.pf-metric{min-height:90px;display:grid;align-content:center;gap:5px;padding:13px 15px;border:1px solid #e2e7ed;border-radius:7px;background:#fff}
+.pf-metric>span{color:#8994a1;font:8px "DM Mono";letter-spacing:.65px}
+.pf-metric>strong{color:#253345;font:600 21px/1.1 Manrope;letter-spacing:-.3px}
+.pf-metric>small{color:#8b96a3;font-size:8px}
+.pf-metric .pf-metric-status{display:flex;align-items:center;gap:7px;font-size:16px}
+.pf-metric-status i{width:7px;height:7px;border-radius:50%;background:#6da982}
+.pf-project-section{margin-top:0}
+.pf-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px}
+.pf-section-heading h2{margin:0 0 4px;color:#253243;font:650 15px Manrope;letter-spacing:-.25px}
+.pf-section-heading p{margin:0;color:#82909e;font-size:9px}
+.pf-project-actions{display:flex;align-items:center;gap:12px}
+.pf-project-actions>span{color:#929daa;font:8px "DM Mono";letter-spacing:.5px}
+.pf-table-wrap{overflow:hidden;border:1px solid #e1e6ec;border-radius:7px;background:#fff}
+.pf-table-head{height:37px;display:grid;grid-template-columns:minmax(220px,1fr) 150px 160px 35px;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid #e8ecf1;background:#fafbfd;color:#8a96a4;font:8px "DM Mono";letter-spacing:.65px}
+.pf-project-item{width:100%;min-height:66px;display:grid;grid-template-columns:minmax(220px,1fr) 150px 160px 35px;align-items:center;gap:10px;padding:9px 14px;border:0;border-bottom:1px solid #edf0f4;background:#fff;color:#425163;text-align:left;transition:background .15s}
+.pf-project-item:last-child{border-bottom:0}
+.pf-project-item:hover{background:#f8fafc}
+.pf-project-primary{display:flex;align-items:center;gap:10px;min-width:0}
+.pf-project-icon{width:32px;height:32px;flex:none;display:grid;place-items:center;border:1px solid #e1e7ef;border-radius:6px;background:#f3f6fa;color:#58718e}
+.pf-project-primary>span:last-child{display:grid;gap:4px;min-width:0}
+.pf-project-primary b{overflow:hidden;color:#2a3747;font-size:10px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+.pf-project-primary small{overflow:hidden;color:#8b96a3;font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+.pf-dialect-tag{justify-self:start;padding:4px 7px;border:1px solid #e1e7ee;border-radius:4px;background:#f7f9fb;color:#607187;font:8px "DM Mono"}
+.pf-updated{display:flex;align-items:center;gap:6px;color:#7e8b9a;font-size:8px}
+.pf-open-project{width:26px;height:26px;display:grid;place-items:center;border-radius:5px;color:#8996a5}
+.pf-project-item:hover .pf-open-project{background:#eaf0f6;color:#3e5d80}
+.pf-table-empty{min-height:100px;display:flex;align-items:center;justify-content:center;gap:9px;color:#8a96a4;font-size:9px}
+.pf-no-projects{flex-direction:column;gap:7px;padding:22px}
+.pf-no-projects>b{color:#344254;font-size:11px}
+.pf-no-projects>p{margin:0 0 5px;color:#8793a1;font-size:9px}
+.pf-empty-icon{width:36px;height:36px;display:grid;place-items:center;border:1px solid #e1e7ee;border-radius:8px;background:#f4f7fa;color:#607b9a}
+.pf-loader{width:12px;height:12px;border:2px solid #dfe5ec;border-top-color:#6f88a7;border-radius:50%;animation:pf-spin .8s linear infinite}
+@keyframes pf-spin{to{transform:rotate(360deg)}}
+.pf-start-panel{display:flex;align-items:center;gap:12px;margin-top:18px;padding:13px 15px;border:1px solid #e2e7ed;border-radius:7px;background:#fff}
+.pf-start-icon{width:31px;height:31px;flex:none;display:grid;place-items:center;border:1px solid #e1e7ee;border-radius:6px;background:#f4f7fa;color:#607b9a}
+.pf-start-panel>div:nth-child(2){flex:1;min-width:0}
+.pf-start-panel b{color:#344254;font-size:9px;font-weight:600}
+.pf-start-panel p{margin:3px 0 0;color:#8995a2;font-size:8px}
+.pf-text-action{display:flex;align-items:center;gap:5px;border:0;background:transparent;color:#49698d;font-size:9px;font-weight:600;white-space:nowrap}
+.pf-text-action:hover{color:#263f5c}
+.pf-content footer{margin-top:32px;border-top-color:#e2e7ed;color:#98a2ae;font-size:8px}
+.pf-content footer>span:first-child{color:#7e8b99;font-size:8px}
+.pf-content footer i{color:#8397ad}
+.pf-dashboard .overlay{background:#18212cb8;backdrop-filter:blur(4px)}
+.pf-dashboard .modal{border-color:#e0e6ed;border-radius:9px;background:#fff;box-shadow:0 24px 70px #1c2b3c25;color:#243244}
+.pf-dashboard .modal-top h2{color:#263547;font-size:19px}
+.pf-dashboard .modal-top p{color:#7d8997}
+.pf-dashboard .modal form>label{color:#687789}
+.pf-dashboard .field{border-color:#dce3eb;border-radius:6px;background:#fbfcfd;color:#293748}
+.pf-dashboard .field:focus{border-color:#7d9fc8;box-shadow:0 0 0 3px #7d9fc81a}
+.pf-dashboard .field::placeholder{color:#a0aab5}
+.pf-dashboard .dialect{border-color:#e0e6ed;background:#fbfcfd}
+.pf-dashboard .dialect b{color:#344254}
+.pf-dashboard .dialect small{color:#8a96a3}
+.pf-dashboard .dialect.selected{border-color:#7895b7;background:#f0f5fa}
+.pf-dashboard .dialect.selected b{color:#385777}
+.pf-dashboard .modal .icon-btn{color:#718091}
+@media(max-width:1050px){
+ .pf-sidebar{width:210px}
+ .pf-main{margin-left:210px}
+ .pf-content{padding:27px 22px 20px}
+ .pf-table-head,.pf-project-item{grid-template-columns:minmax(180px,1fr) 120px 135px 28px}
+}
+@media(max-width:760px){
+ .pf-sidebar{position:relative;width:100%;height:auto;padding:12px}
+ .pf-brand{padding-bottom:10px}
+ .pf-workspace,.pf-sidebar .nav-caption,.pf-sidebar .sidebar-bottom{display:none}
+ .pf-sidebar>.nav{display:none}
+ .pf-main{margin-left:0}
+ .pf-topbar{height:48px;padding:0 13px}
+ .pf-global-search{width:140px}
+ .pf-connection{display:none}
+ .pf-content{padding:21px 13px}
+ .pf-page-title{align-items:flex-start}
+ .pf-page-title h1{font-size:22px}
+ .pf-metrics{gap:6px}
+ .pf-metric{min-height:78px;padding:9px}
+ .pf-metric>strong{font-size:17px}
+ .pf-metric>small{font-size:7px}
+ .pf-section-heading{align-items:flex-start}
+ .pf-table-head{display:none}
+ .pf-project-item{grid-template-columns:minmax(0,1fr) 28px;gap:6px;padding:10px}
+ .pf-dialect-tag,.pf-updated{display:none}
+ .pf-start-panel{align-items:flex-start;flex-wrap:wrap}
+ .pf-text-action{margin-left:43px}
+ .pf-content footer{gap:8px;flex-wrap:wrap}
+}
