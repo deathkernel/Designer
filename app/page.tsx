@@ -438,6 +438,7 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
       items={items}
       notes={notes}
       onCreateItem={onCreateItem}
+      onEditItem={onEditItem}
       onNotesChange={(value) => onUpdateProject({ notes: { ...project.notes, [moduleId]: value } })}
       onRemoveItem={onRemoveItem}
       onUpdateProject={onUpdateProject}
