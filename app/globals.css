@@ -867,3 +867,55 @@ h1,h2,h3,p{margin-top:0}
 .design-accent-note{--design-accent:#b5c0d2;--design-tint:rgba(147,164,188,.14);--design-border:rgba(147,164,188,.25)}
 @media(max-width:1180px){.design-workbench{grid-template-columns:190px minmax(0,1fr)}.design-inspector{grid-column:1/-1;border-top:1px solid rgba(154,174,207,.12);border-left:0}.design-inspector-empty{padding:22px}.design-inspector-actions{max-width:300px}}
 @media(max-width:760px){.design-studio-header{align-items:flex-start;flex-direction:column}.design-header-stats{width:100%;justify-content:space-between}.design-workbench{grid-template-columns:1fr}.design-palette{border-right:0;border-bottom:1px solid rgba(154,174,207,.12)}.design-palette-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.design-palette-tip{margin-top:10px}.design-canvas-viewport{min-height:560px}.design-inspector{grid-column:auto}.design-toolbar{align-items:flex-start;flex-direction:column}.design-toolbar-left{flex-wrap:wrap}.design-studio-foot{align-items:flex-start;flex-direction:column}.design-minimap{display:none}.design-canvas-footer span:nth-child(2){display:none}.design-page-heading h1{font-size:22px}}
+
+
+/* Immersive full-viewport Design Studio */
+html:has(.app-frame-design),body:has(.app-frame-design){height:100%;min-height:0;overflow:hidden}
+.app-frame-design{width:100%;height:100dvh;min-height:0;overflow:hidden;background:#101725}
+.main-shell-design{display:flex;height:100dvh;min-height:0;flex:1;flex-direction:column;overflow:hidden}
+.content-area-design{display:flex;height:100%;min-height:0;flex:1;overflow:hidden}
+.design-page{display:flex;width:100%;height:100%;min-height:0;max-width:none;flex:1;flex-direction:column;margin:0;padding:0;overflow:hidden;background:#101725}
+.design-page-bar{height:58px;min-height:58px;display:flex;align-items:center;gap:15px;padding:0 20px;border-bottom:1px solid rgba(154,174,207,.13);background:#121d2e;color:#e7edf8}
+.design-exit-button{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #354761;border-radius:8px;background:#1c2b40;color:#cbd7e9;font-size:9px;font-weight:750;cursor:pointer}
+.design-exit-button:hover{border-color:#7892c3;background:#293b57;color:#fff}
+.design-page-separator{width:1px;height:24px;background:#34435a}
+.design-page-project{display:flex;min-width:0;flex:1;flex-direction:column;gap:2px}
+.design-page-project span{color:#8294b1;font-size:7px;font-weight:850;letter-spacing:.14em}
+.design-page-project strong{overflow:hidden;color:#eef3fb;font-size:11px;font-weight:750;text-overflow:ellipsis;white-space:nowrap}
+.design-page-actions{display:flex;align-items:center;gap:12px}
+.design-page-save{display:flex;align-items:center;gap:6px;color:#8dc9aa;font-size:8px;font-weight:750}
+.design-page-save i{width:6px;height:6px;border-radius:50%;background:#65d6a0;box-shadow:0 0 10px rgba(101,214,160,.7)}
+.design-page-actions .button{min-height:31px;border-color:#3c4c65;background:#202d42;color:#cbd6e8}
+.design-page .design-studio{display:flex;min-height:0;height:auto;flex:1;flex-direction:column;border:0;border-radius:0;box-shadow:none}
+.design-page .design-studio-header{min-height:68px;padding:10px 20px 9px}
+.design-page .design-studio-title h2{margin:5px 0 3px;font-size:19px}
+.design-page .design-studio-title p{font-size:8px}
+.design-page .design-header-stats strong{font-size:15px}
+.design-page .design-workbench{min-height:0;flex:1}
+.design-page .design-palette{min-height:0;overflow:hidden}
+.design-page .design-palette-list{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:3px}
+.design-page .design-palette-tip{flex:0 0 auto}
+.design-page .design-canvas-frame{min-height:0;overflow:hidden}
+.design-page .design-canvas-viewport{height:0;min-height:0;flex:1}
+.design-page .design-canvas-footer{min-height:30px;flex:0 0 30px}
+.design-page .design-inspector{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.design-page .design-studio-foot{min-height:33px;flex:0 0 33px;padding-top:7px;padding-bottom:7px}
+@media(max-height:760px) and (min-width:761px){
+  .design-page-bar{height:48px;min-height:48px}
+  .design-page .design-studio-header{min-height:56px;padding:6px 16px}
+  .design-page .design-studio-title h2{font-size:17px}
+  .design-page .design-palette{padding-top:9px;padding-bottom:8px}
+  .design-page .design-palette-item{padding:6px}
+  .design-page .design-palette-icon{width:25px;height:25px;flex-basis:25px}
+}
+@media(max-width:760px){
+  html:has(.app-frame-design),body:has(.app-frame-design){overflow:auto}
+  .app-frame-design,.main-shell-design{height:auto;min-height:100dvh;overflow:visible}
+  .content-area-design{height:auto;min-height:calc(100dvh - 48px);overflow:visible}
+  .design-page{height:auto;min-height:100dvh;overflow:visible}
+  .design-page-bar{position:sticky;top:0;z-index:10;height:52px;min-height:52px;padding:0 10px}
+  .design-page-save{display:none}
+  .design-page .design-studio{flex:none}
+  .design-page .design-workbench{flex:none}
+  .design-page .design-canvas-viewport{height:auto;min-height:560px}
+}

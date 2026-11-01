@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
-  ArrowRight, ArrowUpRight, Bot, Boxes, CalendarDays, Check, ChevronDown,
+  ArrowLeft, ArrowRight, ArrowUpRight, Bot, Boxes, CalendarDays, Check, ChevronDown,
   ChevronRight, CircleHelp, ClipboardList, FolderKanban, Gauge, GitMerge,
   Layers3, ListTodo, Menu, Plus, Search, Send, Settings2,
   ShieldCheck, Sparkles, Target, Workflow, X, PlugZap, type LucideIcon
@@ -188,8 +188,8 @@ export default function Home() {
   const activeCount = projects.filter((project) => project.status !== "Completed").length;
 
   return (
-    <main className="app-frame">
-      <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
+    <main className={"app-frame " + (activeModule === "design-studio" ? "app-frame-design" : "")}>
+      {activeModule !== "design-studio" && <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
         <div className="brand-row">
           <div className="brand-mark"><Layers3 size={19}/></div>
           <div className="brand-copy"><span>PlanForge</span><small>PROJECT INTELLIGENCE</small></div>
@@ -219,11 +219,11 @@ export default function Home() {
           <button className="nav-item bottom-link" onClick={() => notify("Help and documentation will be expanded in a later milestone.")}><CircleHelp size={17}/><span>Help & feedback</span></button>
           <div className="profile-row"><div className="profile-avatar">S</div><div className="profile-copy"><strong>Workspace owner</strong><span>Personal workspace</span></div></div>
         </div>
-      </aside>
+      </aside>}
 
-      {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
-      <section className="main-shell">
-        <header className="topbar">
+      {activeModule !== "design-studio" && mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
+      <section className={"main-shell " + (activeModule === "design-studio" ? "main-shell-design" : "")}>
+        {activeModule !== "design-studio" && <header className="topbar">
           <div className="topbar-left"><button className="icon-button mobile-menu" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu size={19}/></button><div className="breadcrumb"><span>Workspace</span><ChevronRight size={14}/><strong>{meta.title}</strong></div></div>
           <div className="topbar-actions">
             {projects.length > 0 && <label className="project-picker"><FolderKanban size={15}/><select aria-label="Active project" value={activeProjectId} onChange={(event) => setActiveProjectId(event.target.value)}>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select><ChevronDown size={13}/></label>}
@@ -232,9 +232,9 @@ export default function Home() {
             <button className="icon-button" aria-label="Open settings" onClick={() => setShowSettings(true)}><Settings2 size={17}/></button>
             <button className="topbar-avatar" aria-label="Ask the planner" onClick={() => setShowAssistant(true)}><Bot size={16}/></button>
           </div>
-        </header>
+        </header>}
 
-        <div className="content-area">
+        <div className={"content-area " + (activeModule === "design-studio" ? "content-area-design" : "")}>
           {activeModule === "overview" ? (
             <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("design-studio"); }} onImportProjects={(imported) => { setProjects((current) => [...imported, ...current]); notify(imported.length + " project(s) restored from backup"); }}/>
           ) : activeModule === "portfolio" ? (
@@ -312,12 +312,19 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
   const notes = project?.notes[moduleId] ?? "";
 
   if (moduleId === "design-studio" && project) {
-    return <div className="page-wrap design-page">
-      <div className="module-breadcrumb"><button onClick={onBack}>Workspace</button><ChevronRight size={13}/><span>CREATIVE WORKSPACE</span></div>
-      <div className="design-page-heading">
-        <div><div className="eyebrow">PROJECT BLUEPRINT · {project.type.toUpperCase()}</div><h1>{project.name}</h1><p>Design the moving parts of this project in one visual space.</p></div>
-        <button className="button button-secondary" onClick={onAsk}><Sparkles size={15}/> Ask Qwen</button>
-      </div>
+    return <div className="design-page">
+      <header className="design-page-bar">
+        <button type="button" className="design-exit-button" onClick={onBack}><ArrowLeft size={15}/> Workspace</button>
+        <span className="design-page-separator"/>
+        <div className="design-page-project">
+          <span>PROJECT DESIGN STUDIO</span>
+          <strong>{project.name}</strong>
+        </div>
+        <div className="design-page-actions">
+          <span className="design-page-save"><i/> Saved locally</span>
+          <button className="button button-secondary" onClick={onAsk}><Sparkles size={15}/> Ask Qwen</button>
+        </div>
+      </header>
       <ProjectDesignStudio key={project.id} project={project} canvas={project.designCanvas} onChange={(designCanvas: ProjectDesignCanvas) => onUpdateProject({ designCanvas })}/>
     </div>;
   }
