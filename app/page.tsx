@@ -3,16 +3,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowRight, Bell, ChevronDown, CircleHelp, Code2, Database,
-  FolderKanban, LayoutGrid, Plus, Search, Settings2, Table2,
-  Workflow, X, Command, HardDrive, Clock3
+  ArrowUpRight, Bell, Check, ChevronDown, CircleHelp, Code2,
+  Command, Database, FolderKanban, HardDrive, LayoutGrid,
+  Plus, Search, Settings2, Table2, Workflow, X, Clock3
 } from "lucide-react";
 import { SqlDialect } from "@/core/schema/types";
 import { useProjectStore } from "@/stores/project-store";
 
 const dialects: { id: SqlDialect; label: string; detail: string }[] = [
-  { id: "postgresql", label: "PostgreSQL", detail: "Recommended for this MVP" },
-  { id: "mysql", label: "MySQL", detail: "Popular relational database" },
+  { id: "postgresql", label: "PostgreSQL", detail: "Recommended for relational applications" },
+  { id: "mysql", label: "MySQL", detail: "Widely used open-source database" },
   { id: "sqlite", label: "SQLite", detail: "Lightweight embedded database" }
 ];
 
@@ -30,9 +30,9 @@ export default function Dashboard() {
 
   useEffect(() => { hydrate(); }, [hydrate]);
 
-  const filtered = useMemo(() => projects.filter((project) =>
-    project.name.toLowerCase().includes(search.toLowerCase())
-  ), [projects, search]);
+  const filtered = useMemo(() => projects
+    .filter((project) => project.name.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => b.updatedAt - a.updatedAt), [projects, search]);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,43 +42,130 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="shell">
-      <aside className="sidebar">
-        <a className="brand" href="/"><span className="brand-symbol"><Database size={19}/></span><span><b>projectforge</b><small>SQL DESIGN STUDIO</small></span></a>
-        <div className="workspace"><span className="workspace-mark">D</span><span><b>Personal workspace</b><small>Local workspace</small></span><ChevronDown size={15}/></div>
+    <main className="shell pf-dashboard">
+      <aside className="sidebar pf-sidebar">
+        <a className="brand pf-brand" href="/">
+          <span className="brand-symbol"><Database size={18} /></span>
+          <span><b>projectforge</b><small>DATABASE WORKSPACE</small></span>
+        </a>
+
+        <button className="workspace pf-workspace">
+          <span className="workspace-mark">D</span>
+          <span><b>Personal workspace</b><small>Local environment</small></span>
+          <ChevronDown size={14} />
+        </button>
+
         <div className="nav-caption">WORKSPACE</div>
-        <a className="nav active" href="/"><LayoutGrid size={17}/>Overview</a>
-        <a className="nav" href="#projects"><FolderKanban size={17}/>Database projects <span className="nav-count">{projects.length}</span></a>
-        <div className="nav-caption tool-caption">SQL TOOLKIT</div>
-        <a className="nav" href="#projects"><Table2 size={17}/>Schema designer</a>
-        <a className="nav" href="#projects"><Workflow size={17}/>Relationships</a>
-        <a className="nav" href="#projects"><Code2 size={17}/>SQL generator</a>
+        <a className="nav active" href="/"><LayoutGrid size={16} />Overview</a>
+        <a className="nav" href="#projects"><FolderKanban size={16} />Projects<span className="nav-count">{projects.length}</span></a>
+
+        <div className="nav-caption tool-caption">DESIGN TOOLS</div>
+        <a className="nav" href="#projects"><Table2 size={16} />Schema designer</a>
+        <a className="nav" href="#projects"><Workflow size={16} />Relationships</a>
+        <a className="nav" href="#projects"><Code2 size={16} />SQL generator</a>
+
         <div className="sidebar-bottom">
-          <a className="nav" href="#about"><CircleHelp size={17}/>About ProjectForge</a>
-          <a className="nav" href="#about"><Settings2 size={17}/>Preferences</a>
-          <div className="local-card"><HardDrive size={15}/><span><b>Local-first storage</b><small>Your projects stay in this browser.</small></span></div>
-          <div className="profile"><span className="profile-mark">S</span><span><b>My workspace</b><small>ProjectForge · Phase 1</small></span></div>
+          <a className="nav" href="#about"><CircleHelp size={16} />Documentation</a>
+          <a className="nav" href="#about"><Settings2 size={16} />Preferences</a>
+          <div className="pf-storage">
+            <span className="pf-storage-icon"><HardDrive size={15} /></span>
+            <span><b>Local storage</b><small>Projects saved in this browser</small></span>
+            <i />
+          </div>
+          <div className="profile pf-profile">
+            <span className="profile-mark">S</span>
+            <span><b>Personal workspace</b><small>ProjectForge · Phase 1</small></span>
+          </div>
         </div>
       </aside>
 
-      <section className="main">
-        <header className="topbar"><div className="crumb">Workspace <span>/</span> <b>Overview</b></div><div className="top-actions"><span className="saved-indicator"><i/> Local storage ready</span><button className="icon-btn" aria-label="Notifications"><Bell size={17}/></button><span className="user-mark">S</span></div></header>
-        <div className="content">
-          <div className="heading-row"><div><div className="eyebrow">DATABASE DESIGN WORKSPACE</div><h1>Model your data.<br/><em>Before you query.</em></h1><p>Design relational schemas visually and turn them into production-ready SQL.</p></div><button className="primary" onClick={() => setModalOpen(true)}><Plus size={17}/> New database</button></div>
+      <section className="main pf-main">
+        <header className="topbar pf-topbar">
+          <div className="crumb">Workspace <span>/</span> <b>Overview</b></div>
+          <div className="pf-top-actions">
+            <label className="pf-global-search"><Search size={14} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search projects..." /><kbd><Command size={10} /> K</kbd></label>
+            <span className="pf-connection"><i /> Local storage ready</span>
+            <button className="icon-btn" aria-label="Notifications"><Bell size={16} /></button>
+            <span className="user-mark">S</span>
+          </div>
+        </header>
 
-          <section className="hero"><div className="hero-copy"><span className="hero-label"><Database size={13}/> PHASE 01 · SQL DESIGNER</span><h2>Your database,<br/>designed with <i>clarity.</i></h2><p>Create tables, define columns, connect relationships and generate SQL — all in one focused workspace.</p><button className="hero-cta" onClick={() => setModalOpen(true)}>Start designing <ArrowRight size={16}/></button><div className="hero-note"><span/> No account required · No AI · No API costs</div></div><div className="schema-art" aria-hidden="true"><div className="schema-glow"/><div className="schema-line line-a"/><div className="schema-line line-b"/><div className="schema-line line-c"/><div className="schema-card card-a"><div className="schema-card-head"><Table2 size={13}/> users</div><span>🔑 id <small>INT</small></span><span>name <small>VARCHAR</small></span><span>email <small>VARCHAR</small></span></div><div className="schema-card card-b"><div className="schema-card-head"><Table2 size={13}/> orders</div><span>🔑 id <small>INT</small></span><span>user_id <small>INT</small></span><span>total <small>DECIMAL</small></span></div><div className="schema-card card-c"><div className="schema-card-head"><Table2 size={13}/> products</div><span>🔑 id <small>INT</small></span><span>title <small>VARCHAR</small></span></div><div className="schema-center"><Database size={20}/></div><span className="art-caption">RELATIONAL DATA MODEL</span></div></section>
+        <div className="content pf-content">
+          <div className="pf-page-title">
+            <div>
+              <div className="eyebrow">DATABASE WORKSPACE</div>
+              <h1>Overview</h1>
+              <p>Manage your database projects and continue where you left off.</p>
+            </div>
+            <button className="primary" onClick={() => setModalOpen(true)}><Plus size={15} /> New project</button>
+          </div>
 
-          <section className="stats"><div><span>DATABASE PROJECTS</span><b>{hydrated ? String(projects.length).padStart(2,"0") : "—"}</b><small>Saved in this browser</small></div><div><span>SQL DIALECTS</span><b>03</b><small>PostgreSQL · MySQL · SQLite</small></div><div><span>DESIGN MODE</span><b className="mode-value">Visual + SQL</b><small>Schema and code together</small></div></section>
-
-          <section className="projects" id="projects"><div className="section-head"><div><span className="eyebrow">YOUR DATABASES</span><h3>Recent projects</h3><p>Continue designing your data models.</p></div><div className="project-controls"><label className="search"><Search size={15}/><input value={search} onChange={(event)=>setSearch(event.target.value)} placeholder="Search databases"/></label><button className="secondary" onClick={()=>setModalOpen(true)}><Plus size={15}/> New</button></div></div>
-            {!hydrated ? <div className="empty"><div className="empty-symbol"><Database size={22}/></div><h4>Loading your workspace</h4><p>Checking locally saved database projects.</p></div> : filtered.length ? <div className="project-list">{filtered.map((project)=> <button className="project-row" key={project.id} onClick={()=>router.push(`/editor/${project.id}`)}><span className="project-icon"><Database size={19}/></span><span className="project-name"><b>{project.name}</b><small>{project.description || "No description added"}</small></span><span className="project-dialect">{project.dialect}</span><span className="project-meta"><Clock3 size={13}/>{new Date(project.updatedAt).toLocaleDateString()}</span><ArrowRight size={16}/></button>)}</div> : <div className="empty"><div className="empty-symbol"><Database size={22}/></div><h4>{search ? "No matching databases" : "Your first schema starts here."}</h4><p>{search ? "Try a different project name." : "Create a database project and start adding tables."}</p>{!search && <button className="secondary" onClick={()=>setModalOpen(true)}><Plus size={15}/> Create database</button>}</div>}
+          <section className="pf-metrics" aria-label="Workspace summary">
+            <div className="pf-metric"><span>PROJECTS</span><strong>{hydrated ? String(projects.length).padStart(2, "0") : "—"}</strong><small>In this workspace</small></div>
+            <div className="pf-metric"><span>SUPPORTED DIALECTS</span><strong>03</strong><small>PostgreSQL, MySQL, SQLite</small></div>
+            <div className="pf-metric"><span>WORKSPACE</span><strong className="pf-metric-status"><i /> Local</strong><small>Browser-based storage</small></div>
           </section>
-          <footer id="about"><span>PROJECTFORGE <i>/</i> SQL DESIGN STUDIO</span><span>Built for thoughtful data design.</span><span>v0.1.0 · Phase 1</span></footer>
+
+          <section className="pf-project-section" id="projects">
+            <div className="pf-section-heading">
+              <div><h2>Database projects</h2><p>Your schemas, all in one place.</p></div>
+              <div className="pf-project-actions">
+                <span>{filtered.length} {filtered.length === 1 ? "PROJECT" : "PROJECTS"}</span>
+                <button className="secondary" onClick={() => setModalOpen(true)}><Plus size={14} /> New project</button>
+              </div>
+            </div>
+
+            <div className="pf-table-wrap">
+              <div className="pf-table-head"><span>PROJECT</span><span>DIALECT</span><span>LAST UPDATED</span><span> </span></div>
+              {!hydrated ? (
+                <div className="pf-table-empty"><span className="pf-loader" /> Loading projects...</div>
+              ) : filtered.length ? filtered.map((project) => (
+                <button className="pf-project-item" key={project.id} onClick={() => router.push(`/editor/${project.id}`)}>
+                  <span className="pf-project-primary">
+                    <span className="pf-project-icon"><Database size={17} /></span>
+                    <span><b>{project.name}</b><small>{project.description || "No description"}</small></span>
+                  </span>
+                  <span className="pf-dialect-tag">{project.dialect}</span>
+                  <span className="pf-updated"><Clock3 size={13} />{new Date(project.updatedAt).toLocaleDateString()}</span>
+                  <span className="pf-open-project"><ArrowUpRight size={16} /></span>
+                </button>
+              )) : (
+                <div className="pf-table-empty pf-no-projects">
+                  <span className="pf-empty-icon"><Database size={20} /></span>
+                  <b>{search ? "No matching projects" : "No database projects yet"}</b>
+                  <p>{search ? "Try another project name." : "Create a project to start designing your first schema."}</p>
+                  {!search && <button className="secondary" onClick={() => setModalOpen(true)}><Plus size={14} /> Create project</button>}
+                </div>
+              )}
+            </div>
+          </section>
+
+          <section className="pf-start-panel">
+            <div className="pf-start-icon"><Workflow size={18} /></div>
+            <div><b>Start with a visual schema</b><p>Add tables, define columns and connect relationships in the schema designer.</p></div>
+            <button className="pf-text-action" onClick={() => filtered[0] ? router.push(`/editor/${filtered[0].id}`) : setModalOpen(true)}>{filtered.length ? "Open a project" : "Create a project"} <ArrowUpRight size={14} /></button>
+          </section>
+
+          <footer id="about"><span>PROJECTFORGE <i>/</i> DATABASE WORKSPACE</span><span>Local-first schema design</span><span>v0.1.0 · Phase 1</span></footer>
         </div>
       </section>
 
-      {modalOpen && <div className="overlay" onMouseDown={(event)=>{if(event.target===event.currentTarget)setModalOpen(false);}}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal-top"><div><span className="eyebrow">NEW DATABASE PROJECT</span><h2 id="modal-title">Start with your schema.</h2><p>Create a workspace for your database design.</p></div><button className="icon-btn" onClick={()=>setModalOpen(false)} aria-label="Close"><X size={18}/></button></div><form onSubmit={submit}><label htmlFor="db-name">PROJECT NAME</label><input id="db-name" className="field" autoFocus maxLength={80} value={name} onChange={(event)=>setName(event.target.value)} placeholder="e.g. Store database" required/><label htmlFor="db-description">DESCRIPTION <small>OPTIONAL</small></label><textarea id="db-description" className="field textarea" maxLength={240} value={description} onChange={(event)=>setDescription(event.target.value)} placeholder="What data will this project manage?"/><label>SQL DIALECT</label><div className="dialect-options">{dialects.map((item)=><button type="button" key={item.id} className={dialect===item.id?"dialect selected":"dialect"} onClick={()=>setDialect(item.id)}><b>{item.label}</b><small>{item.detail}</small></button>)}</div><div className="modal-actions"><button type="button" className="secondary" onClick={()=>setModalOpen(false)}>Cancel</button><button className="primary" type="submit" disabled={!name.trim()}>Create project <ArrowRight size={15}/></button></div></form></section></div>}
-      <div className="toast-space" aria-hidden="true"/>
+      {modalOpen && (
+        <div className="overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setModalOpen(false); }}>
+          <section className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div className="modal-top"><div><span className="eyebrow">NEW DATABASE PROJECT</span><h2 id="modal-title">Create a project</h2><p>Set up a workspace for your database schema.</p></div><button className="icon-btn" onClick={() => setModalOpen(false)} aria-label="Close"><X size={18} /></button></div>
+            <form onSubmit={submit}>
+              <label htmlFor="db-name">PROJECT NAME</label>
+              <input id="db-name" className="field" autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. Store database" required />
+              <label htmlFor="db-description">DESCRIPTION <small>OPTIONAL</small></label>
+              <textarea id="db-description" className="field textarea" maxLength={240} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="What data will this project manage?" />
+              <label>SQL DIALECT</label>
+              <div className="dialect-options">{dialects.map((item) => <button type="button" key={item.id} className={dialect === item.id ? "dialect selected" : "dialect"} onClick={() => setDialect(item.id)}><b>{item.label}</b><small>{item.detail}</small></button>)}</div>
+              <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModalOpen(false)}>Cancel</button><button className="primary" type="submit" disabled={!name.trim()}>Create project <ArrowUpRight size={15} /></button></div>
+            </form>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
