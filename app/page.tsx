@@ -10,7 +10,8 @@ import {
 import { navigation, moduleMeta } from "@/lib/navigation";
 import { readProjects, writeProjects } from "@/lib/storage";
 import { AiProjectIntake } from "@/components/ai-project-intake";
-import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectIntake, ProjectStatus } from "@/lib/types";
+import { AiRoadmapPlanner } from "@/components/ai-roadmap-planner";
+import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
 
 type AiState = "checking" | "ready" | "model-missing" | "offline";
 type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -228,7 +229,7 @@ export default function Home() {
           {activeModule === "overview" ? (
             <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onSwitchProject={setActiveProjectId}/>
           ) : (
-            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={() => activeProject ? setShowItemCreate(true) : setShowCreate(true)} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)}/>
+            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={() => activeProject ? setShowItemCreate(true) : setShowCreate(true)} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")}/>
           )}
         </div>
       </section>
@@ -288,9 +289,9 @@ function StatusPill({ status }: { status: ProjectStatus }) {
   return <span className={"status-pill " + cls}><span/>{status}</span>;
 }
 
-function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onCreateItem, onUpdateProject, onRemoveItem, onAsk }: {
+function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onCreateItem, onUpdateProject, onRemoveItem, onAsk, onGoToBrief }: {
   moduleId: ModuleId; project?: Project; activeTab: string; onTabChange: (tab: string) => void; onBack: () => void;
-  onCreateItem: () => void; onUpdateProject: (patch: Partial<Project>) => void; onRemoveItem: (id: string) => void; onAsk: () => void;
+  onCreateItem: () => void; onUpdateProject: (patch: Partial<Project>) => void; onRemoveItem: (id: string) => void; onAsk: () => void; onGoToBrief: () => void;
 }) {
   const meta = moduleMeta[moduleId];
   const Icon = meta.icon;
@@ -300,8 +301,8 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
     <div className="module-breadcrumb"><button onClick={onBack}>Workspace</button><ChevronRight size={13}/><span>{meta.eyebrow}</span></div>
     <div className="module-heading-row"><div className="module-title-wrap"><div className="module-icon"><Icon size={21}/></div><div><div className="eyebrow">{meta.eyebrow}</div><h1>{meta.title}</h1><p className="page-intro">{meta.description}</p></div></div><button className="button button-secondary" onClick={onAsk}><Sparkles size={15}/> Ask Qwen</button></div>
     <div className="context-strip"><span className="context-project"><FolderKanban size={14}/>{project?.name ?? "No active project"}</span><span className="context-separator"/><span className="context-draft">{project?.status ?? "Create a project first"}</span><span className="context-separator"/><span className="context-muted">Changes save in this browser</span></div>
-    <div className="module-tabs" role="tablist">{meta.tabs.map((value) => <button role="tab" aria-selected={activeTab === value} key={value} className={activeTab === value ? "module-tab active-tab" : "module-tab"} onClick={() => onTabChange(value)}>{value}</button>)}</div>
-    {!project ? <div className="panel blank-module"><FolderKanban size={25}/><h3>Create a project first</h3><p>Planning work is attached to a project workspace.</p></div> : <div className="module-content-grid">
+    {moduleId !== "roadmap" && <div className="module-tabs" role="tablist">{meta.tabs.map((value) => <button role="tab" aria-selected={activeTab === value} key={value} className={activeTab === value ? "module-tab active-tab" : "module-tab"} onClick={() => onTabChange(value)}>{value}</button>)}</div>
+    {!project ? <div className="panel blank-module"><FolderKanban size={25}/><h3>Create a project first</h3><p>Planning work is attached to a project workspace.</p></div> : moduleId === "roadmap" ? <AiRoadmapPlanner project={project} onSave={(roadmap: ProjectRoadmap) => onUpdateProject({ roadmap })} onApplyTasks={(newItems: PlanningItem[]) => onUpdateProject({ items: [...project.items, ...newItems] })} onGoToBrief={onGoToBrief}/> : <div className="module-content-grid">
       <section className="panel module-main-panel">
         <div className="panel-heading"><div><h3>{activeTab}</h3><p>{items.length} planning item{items.length === 1 ? "" : "s"} in this section</p></div><button className="button button-secondary button-small" onClick={onCreateItem}><Plus size={14}/> Add item</button></div>
         {moduleId === "brief" && <AiProjectIntake project={project} onSave={(intake: ProjectIntake) => onUpdateProject({ intake, objective: project.objective || intake.analysis.desiredOutcome })} onApplyWorkstreams={(analysis: IntakeAnalysis) => {

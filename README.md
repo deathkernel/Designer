@@ -20,6 +20,9 @@ It is not a SQL designer and it is not a coding assistant. Technical architectur
 - Nested navigation for definition, execution, governance, evaluation, systems/processes, integrations and documentation.
 - Project-specific planning items and working notes.
 - AI Project Intake: idea analysis, objectives, deliverables, workstreams, risks, assumptions, evidence needs and clarification questions.
+- AI Roadmap: converts the saved intake into phases, tasks, milestones, dependencies and suggested resource roles.
+- Deterministic schedule calculation: earliest start/finish, slack, critical path and target-deadline comparison. Weekend days are skipped; public holidays are not currently modelled.
+- Timeline view with task progress tracking; generated tasks can be copied into Work Breakdown.
 - Refine the intake analysis with user answers and persist it in the project workspace.
 - Apply proposed workstream tasks to the Work Breakdown module.
 - Ollama status check and Qwen chat/intake endpoints.
@@ -61,6 +64,7 @@ OLLAMA_MODEL=hf.co/bartowski/Qwen_Qwen3.5-9B-GGUF:Q6_K
 - `GET /api/ai/status` checks whether Ollama is reachable and whether the configured model appears in `/api/tags`.
 - `POST /api/ai/chat` sends current project context and a planning question to Ollama's `/api/chat` endpoint.
 - `POST /api/ai/intake` sends a project idea, context and clarification answers to the local model and validates a structured JSON planning brief.
+- `POST /api/ai/roadmap` converts saved intake into a dependency-aware roadmap and rejects circular dependency graphs.
 
 The browser calls only local Next.js routes. Ollama settings remain server-side. No public external API is called automatically in this foundation.
 
@@ -72,4 +76,4 @@ The browser calls only local Next.js routes. Ollama settings remain server-side.
 
 ## Current limitations
 
-This is an iterative foundation, not the finished planning engine. Projects and intake analyses are stored in the current browser. Advanced Gantt calculations, dependency validation, interactive visual canvases, source-backed API research, automated schedule/cost estimation, exports, cloud sync and collaborative workspaces are later milestones.
+This is an iterative foundation, not the finished planning engine. Projects and intake analyses are stored in the current browser. The roadmap currently provides a compact Gantt-style timeline and deterministic dependency/critical-path calculations. Full drag-and-drop Gantt editing, resource capacity balancing, source-backed API research, automated cost estimation, export, cloud sync and collaborative workspaces are later milestones.

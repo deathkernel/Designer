@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 export type ProjectStatus = "Planning" | "In progress" | "On hold" | "Completed";
 export type ModuleId =
-  | "overview" | "brief" | "requirements" | "scope" | "work-breakdown"
+  | "overview" | "brief" | "requirements" | "scope" | "work-breakdown" | "roadmap"
   | "timeline" | "milestones" | "resources" | "risks" | "security"
   | "testing" | "decisions" | "budget" | "feasibility" | "architecture"
   | "components" | "connections" | "data-flows" | "integrations"
@@ -84,6 +84,56 @@ export type ProjectIntake = {
   updatedAt: string;
 };
 
+export type RoadmapPriority = "high" | "medium" | "low";
+export type RoadmapTaskStatus = "not-started" | "in-progress" | "done";
+
+export type RoadmapTask = {
+  id: string;
+  phaseId: string;
+  title: string;
+  description: string;
+  durationDays: number;
+  ownerRole: string;
+  priority: RoadmapPriority;
+  dependsOn: string[];
+  status: RoadmapTaskStatus;
+};
+
+export type RoadmapPhase = {
+  id: string;
+  title: string;
+  goal: string;
+  taskIds: string[];
+};
+
+export type RoadmapMilestone = {
+  id: string;
+  title: string;
+  description: string;
+  afterTaskIds: string[];
+  acceptanceCriteria: string[];
+};
+
+export type RoadmapResourceRole = {
+  id: string;
+  role: string;
+  responsibilities: string;
+  skills: string[];
+};
+
+export type ProjectRoadmap = {
+  summary: string;
+  generatedAt: string;
+  startDate: string;
+  targetEndDate: string;
+  phases: RoadmapPhase[];
+  tasks: RoadmapTask[];
+  milestones: RoadmapMilestone[];
+  resourceRoles: RoadmapResourceRole[];
+  assumptions: string[];
+  externalConstraints: string[];
+};
+
 export type Project = {
   id: string;
   name: string;
@@ -95,6 +145,7 @@ export type Project = {
   notes: Partial<Record<ModuleId, string>>;
   items: PlanningItem[];
   intake?: ProjectIntake;
+  roadmap?: ProjectRoadmap;
 };
 
 export type NavItem = {
