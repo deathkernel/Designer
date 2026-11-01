@@ -430,7 +430,7 @@ const sqlConstraints = new Set([
 ]);
 
 function SqlHighlight({ value }: { value: string }) {
-  const parts = value.split(/(--[^\\n]*|'(?:''|[^'])*'|"(?:""|[^"])*"|\\b\\d+(?:\\.\\d+)?\\b|\\b[A-Za-z_][A-Za-z0-9_]*\\b)/g);
+  const parts = value.split(/(--[^\n]*|'(?:''|[^'])*'|"(?:""|[^"])*"|\b\d+(?:\.\d+)?\b|\b[A-Za-z_][A-Za-z0-9_]*\b)/g);
 
   return (
     <code>
@@ -440,7 +440,7 @@ function SqlHighlight({ value }: { value: string }) {
 
         if (part.startsWith("--")) className = "sql-token-comment";
         else if (part.startsWith("'") || part.startsWith('"')) className = "sql-token-string";
-        else if (/^\\d/.test(part)) className = "sql-token-number";
+        else if (/^\d/.test(part)) className = "sql-token-number";
         else if (sqlTypes.has(upper)) className = "sql-token-type";
         else if (sqlConstraints.has(upper)) className = "sql-token-constraint";
         else if (sqlKeywords.has(upper)) className = "sql-token-keyword";
