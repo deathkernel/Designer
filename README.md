@@ -93,3 +93,8 @@ Use the dashboard's **Local project backup** controls to export all projects to 
 Portfolio Intelligence aggregates local project records into a cross-project command centre. It provides rule-based project health signals from intake readiness, roadmap dependency blockers, high-priority open tasks and target-date outlook. Budget records are stored per project and totals are grouped by currency so unlike currencies are not added together. Resource assignments can be shared across projects; matching resource names are combined to show overall allocation and over-capacity warnings. Bottleneck signals highlight blocked tasks, critical high-priority work and tasks with multiple downstream dependencies.
 
 Health scores are planning signals, not guarantees. Budget, hours and allocations are manually entered estimates; the dashboard does not infer actual financial or human-resource data.
+
+
+## Dedicated planning editors
+
+Planning modules now open into their own editors rather than sharing one generic item form. The workspace includes a requirements traceability matrix, scope kanban, work-breakdown tree, probability/impact risk matrix, project cost ledger, decision board, milestone timeline, resource allocation board, testing/security checklists, feasibility scorecard, tool comparison workspace, system/connection/API canvas and live document preview. Timeline planning opens the dedicated Gantt editor. These editor-specific properties are saved with the existing project items and notes, so the local project store remains compatible with earlier projects.

@@ -13,6 +13,7 @@ import { AiProjectIntake } from "@/components/ai-project-intake";
 import { AiRoadmapPlanner } from "@/components/ai-roadmap-planner";
 import { ProjectBackup } from "@/components/project-backup";
 import { PortfolioIntelligence } from "@/components/portfolio-intelligence";
+import { PlanningStudio } from "@/components/planning-studio";
 import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
 
 type AiState = "checking" | "ready" | "model-missing" | "offline";
@@ -238,7 +239,7 @@ export default function Home() {
           ) : activeModule === "portfolio" ? (
             <PortfolioIntelligence projects={projects} onUpdateProject={updateProjectById} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }}/>
           ) : (
-            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={() => activeProject ? setShowItemCreate(true) : setShowCreate(true)} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")}/>
+            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")} onGoToRoadmap={() => chooseModule("roadmap")}/>
           )}
         </div>
       </section>
@@ -299,14 +300,36 @@ function StatusPill({ status }: { status: ProjectStatus }) {
   return <span className={"status-pill " + cls}><span/>{status}</span>;
 }
 
-function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onCreateItem, onUpdateProject, onRemoveItem, onAsk, onGoToBrief }: {
+function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onUpdateProject, onRemoveItem, onAsk, onGoToBrief, onGoToRoadmap }: {
   moduleId: ModuleId; project?: Project; activeTab: string; onTabChange: (tab: string) => void; onBack: () => void;
-  onCreateItem: () => void; onUpdateProject: (patch: Partial<Project>) => void; onRemoveItem: (id: string) => void; onAsk: () => void; onGoToBrief: () => void;
+  onUpdateProject: (patch: Partial<Project>) => void; onRemoveItem: (id: string) => void;
+  onAsk: () => void; onGoToBrief: () => void; onGoToRoadmap: () => void;
 }) {
   const meta = moduleMeta[moduleId];
   const Icon = meta.icon;
   const items = project?.items.filter((item) => item.moduleId === moduleId) ?? [];
   const notes = project?.notes[moduleId] ?? "";
+
+  function addStudioItem(title: string, detail: string, metadata: Record<string, string | number | boolean>) {
+    if (!project) return;
+    const item: PlanningItem = {
+      id: crypto.randomUUID(),
+      moduleId,
+      title,
+      detail,
+      createdAt: new Date().toISOString(),
+      metadata
+    };
+    onUpdateProject({ items: [...project.items, item] });
+  }
+
+  function updateStudioItem(id: string, patch: Partial<PlanningItem>) {
+    if (!project) return;
+    onUpdateProject({
+      items: project.items.map((item) => item.id === id ? { ...item, ...patch } : item)
+    });
+  }
+
   return <div className="page-wrap module-page">
     <div className="module-breadcrumb"><button onClick={onBack}>Workspace</button><ChevronRight size={13}/><span>{meta.eyebrow}</span></div>
     <div className="module-heading-row"><div className="module-title-wrap"><div className="module-icon"><Icon size={21}/></div><div><div className="eyebrow">{meta.eyebrow}</div><h1>{meta.title}</h1><p className="page-intro">{meta.description}</p></div></div><button className="button button-secondary" onClick={onAsk}><Sparkles size={15}/> Ask Qwen</button></div>
@@ -314,35 +337,35 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
     {moduleId !== "roadmap" && <div className="module-tabs" role="tablist">{meta.tabs.map((value) => <button role="tab" aria-selected={activeTab === value} key={value} className={activeTab === value ? "module-tab active-tab" : "module-tab"} onClick={() => onTabChange(value)}>{value}</button>)}</div>}
     {!project ? <div className="panel blank-module"><FolderKanban size={25}/><h3>Create a project first</h3><p>Planning work is attached to a project workspace.</p></div> : moduleId === "roadmap" ? <AiRoadmapPlanner project={project} onSave={(roadmap: ProjectRoadmap) => { const completedTasks = roadmap.tasks.filter((task) => task.status === "done").length; const progress = roadmap.tasks.length ? Math.round((completedTasks / roadmap.tasks.length) * 100) : 0; onUpdateProject({ roadmap, progress, status: progress === 100 && roadmap.tasks.length ? "Completed" : progress > 0 ? "In progress" : project.status === "Completed" ? "Planning" : project.status }); }} onApplyTasks={(newItems: PlanningItem[]) => onUpdateProject({ items: [...project.items, ...newItems] })} onGoToBrief={onGoToBrief}/> : <div className="module-content-grid">
       <section className="panel module-main-panel">
-        <div className="panel-heading"><div><h3>{activeTab}</h3><p>{items.length} planning item{items.length === 1 ? "" : "s"} in this section</p></div><button className="button button-secondary button-small" onClick={onCreateItem}><Plus size={14}/> Add item</button></div>
-        {moduleId === "brief" && <AiProjectIntake project={project} onSave={(intake: ProjectIntake) => onUpdateProject({ intake, objective: project.objective || intake.analysis.desiredOutcome })} onApplyWorkstreams={(analysis: IntakeAnalysis) => {
-          const existing = new Set(project.items.filter((item) => item.moduleId === "work-breakdown").map((item) => item.title.toLowerCase()));
-          const proposed = analysis.workstreams.flatMap((stream) => stream.tasks.map((task) => ({
-            id: crypto.randomUUID(),
-            moduleId: "work-breakdown" as const,
-            title: task,
-            detail: "Workstream: " + stream.title + (stream.goal ? ". " + stream.goal : ""),
-            createdAt: new Date().toISOString()
-          }))).filter((item) => !existing.has(item.title.toLowerCase())).slice(0, 30);
-          if (!proposed.length) return;
-          onUpdateProject({ items: [...project.items, ...proposed] });
-        }}/>}
-        {moduleId === "brief" && <div className="objective-editor"><label htmlFor="project-objective">PROJECT OBJECTIVE</label><textarea id="project-objective" value={project.objective} onChange={(event) => onUpdateProject({ objective: event.target.value })} placeholder="Describe the need, desired outcome and who benefits..."/></div>}
-        <div className="plan-item-list">
-          {items.map((item,index) => <article className="plan-item" key={item.id}><div className="plan-item-number">{String(index + 1).padStart(2,"0")}</div><div className="plan-item-body"><div className="plan-item-top"><strong>{item.title}</strong><span className="item-tag">{meta.shortLabel}</span></div>{item.detail && <p>{item.detail}</p>}
-            {(item.source || item.destination || item.trigger || item.tool || item.input || item.output || item.failure) && <div className="item-detail-grid">
-              {item.source && <span><b>Source</b>{item.source}</span>}{item.destination && <span><b>Destination</b>{item.destination}</span>}
-              {item.trigger && <span><b>Trigger</b>{item.trigger}</span>}{item.tool && <span><b>Tool / method</b>{item.tool}</span>}
-              {item.input && <span><b>Input</b>{item.input}</span>}{item.output && <span><b>Expected output</b>{item.output}</span>}
-              {item.failure && <span><b>Failure / fallback</b>{item.failure}</span>}
-            </div>}</div><button className="icon-button remove-item" aria-label={"Remove " + item.title} onClick={() => onRemoveItem(item.id)}><Trash2 size={15}/></button></article>)}
-          {!items.length && <div className="empty-module"><div className="empty-icon"><Icon size={20}/></div><strong>No items in this section yet</strong><p>Start with the prompts below or ask Qwen to help structure this part of the plan.</p><button className="button button-secondary button-small" onClick={onCreateItem}><Plus size={14}/> Add first item</button></div>}
-        </div>
-        <div className="notes-block"><label htmlFor="module-notes">Working notes</label><textarea id="module-notes" value={notes} onChange={(event) => onUpdateProject({ notes: { ...project.notes, [moduleId]: event.target.value } })} placeholder="Capture decisions, assumptions, open questions and evidence..."/><div className="notes-footer"><span><HardDrive size={12}/> Saved locally as you type</span><span>{notes.length} characters</span></div></div>
+        {moduleId === "brief" && <>
+          <div className="panel-heading"><div><h3>Discover and define</h3><p>Clarify the outcome before shaping the rest of the plan.</p></div><span className="studio-item-count">{items.length} brief items</span></div>
+          <AiProjectIntake project={project} onSave={(intake: ProjectIntake) => onUpdateProject({ intake, objective: project.objective || intake.analysis.desiredOutcome })} onApplyWorkstreams={(analysis: IntakeAnalysis) => {
+            const existing = new Set(project.items.filter((item) => item.moduleId === "work-breakdown").map((item) => item.title.toLowerCase()));
+            const proposed = analysis.workstreams.flatMap((stream) => stream.tasks.map((task) => ({
+              id: crypto.randomUUID(),
+              moduleId: "work-breakdown" as const,
+              title: task,
+              detail: "Workstream: " + stream.title + (stream.goal ? ". " + stream.goal : ""),
+              createdAt: new Date().toISOString()
+            }))).filter((item) => !existing.has(item.title.toLowerCase())).slice(0, 30);
+            if (proposed.length) onUpdateProject({ items: [...project.items, ...proposed] });
+          }}/>
+          <div className="objective-editor"><label htmlFor="project-objective">PROJECT OUTCOME</label><textarea id="project-objective" value={project.objective} onChange={(event) => onUpdateProject({ objective: event.target.value })} placeholder="Describe the need, desired outcome and who benefits..."/></div>
+        </>}
+        <PlanningStudio
+          moduleId={moduleId}
+          items={items}
+          notes={notes}
+          onNotesChange={(value) => onUpdateProject({ notes: { ...project.notes, [moduleId]: value } })}
+          onAdd={addStudioItem}
+          onUpdate={updateStudioItem}
+          onRemove={onRemoveItem}
+          onOpenRoadmap={onGoToRoadmap}
+        />
       </section>
       <aside className="module-side-column">
-        <section className="panel side-info-panel"><div className="side-panel-title"><Sparkles size={16}/><strong>Planning prompts</strong></div><p>Use these prompts to make this section specific, measurable and reviewable.</p><div className="prompt-list">{meta.prompts.map((prompt) => <div className="prompt-line" key={prompt}><Check size={13}/>{prompt}</div>)}</div><button className="text-button" onClick={onAsk}>Discuss with Qwen <ArrowUpRight size={13}/></button></section>
-        <section className="panel side-info-panel"><div className="side-panel-title"><Gauge size={16}/><strong>Section progress</strong></div><div className="quality-placeholder"><div className="quality-ring"><span>{Math.min(100, items.length * 20)}%</span></div><div><strong>{items.length ? "Plan taking shape" : "Not started"}</strong><small>{items.length ? items.length + " items captured. Review assumptions and evidence." : "Add planning details to make this section reviewable."}</small></div></div><div className="progress-track"><span style={{width: Math.min(100, items.length * 20) + "%"}}/></div></section>
+        <section className="panel side-info-panel"><div className="side-panel-title"><Sparkles size={16}/><strong>Editor guidance</strong></div><p>Use this workspace to shape the actual project model. The fields inside cards are there to describe and refine what you design.</p><div className="prompt-list">{meta.prompts.map((prompt) => <div className="prompt-line" key={prompt}><Check size={13}/>{prompt}</div>)}</div><button className="text-button" onClick={onAsk}>Discuss with Qwen <ArrowUpRight size={13}/></button></section>
+        <section className="panel side-info-panel"><div className="side-panel-title"><Gauge size={16}/><strong>Workspace progress</strong></div><div className="quality-placeholder"><div className="quality-ring"><span>{Math.min(100, items.length * 20)}%</span></div><div><strong>{items.length ? "Editor taking shape" : "Ready to design"}</strong><small>{items.length ? items.length + " items captured. Continue refining the editor." : "Create the first card, node, requirement or decision."}</small></div></div><div className="progress-track"><span style={{width: Math.min(100, items.length * 20) + "%"}}/></div></section>
       </aside>
     </div>}
   </div>;

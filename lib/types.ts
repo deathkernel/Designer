@@ -21,6 +21,7 @@ export type PlanningItem = {
   input?: string;
   output?: string;
   failure?: string;
+  metadata?: Record<string, string | number | boolean>;
 };
 
 export type IntakePriority = "high" | "medium" | "low";
