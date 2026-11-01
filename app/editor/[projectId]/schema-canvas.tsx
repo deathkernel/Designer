@@ -16,7 +16,7 @@ import {
   Position,
   MarkerType
 } from "@xyflow/react";
-import { KeyRound, Link2, Table2 } from "lucide-react";
+import { KeyRound, Link2, Plus, Table2 } from "lucide-react";
 import type { SqlProject, SqlTable } from "@/core/schema/types";
 
 type TableNodeData = { table: SqlTable };
@@ -62,10 +62,12 @@ const nodeTypes = { table: TableNodeCard };
 
 export default function SchemaCanvas({
   project,
-  onPositionChange
+  onPositionChange,
+  onAddTable
 }: {
   project: SqlProject;
   onPositionChange: (tableId: string, position: { x: number; y: number }) => void;
+  onAddTable: () => void;
 }) {
   const initialNodes = useMemo<TableNodeType[]>(
     () => project.tables.map((table) => ({
@@ -113,21 +115,17 @@ export default function SchemaCanvas({
     onPositionChange(node.id, node.position);
   }, [onPositionChange]);
 
-  if (!project.tables.length) {
-    return (
-      <div className="diagram-empty">
-        <Table2 size={26} />
-        <h3>Your schema canvas is empty</h3>
-        <p>Add tables in Schema designer and they will appear here.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="schema-canvas">
       <div className="canvas-caption">
-        <span><i /> DRAG TABLES TO ARRANGE YOUR SCHEMA</span>
-        <span>{project.tables.length} TABLES · {project.relations.length} RELATIONSHIPS</span>
+        <div className="canvas-caption-copy">
+          <span className="canvas-live"><i /> CANVAS</span>
+          <span>{project.tables.length} TABLES <b>·</b> {project.relations.length} CONNECTIONS</span>
+        </div>
+        <div className="canvas-actions">
+          <span>Drag to move <b>·</b> Scroll to zoom</span>
+          <button type="button" onClick={onAddTable}><Plus size={14} /> Add table</button>
+        </div>
       </div>
       <div className="schema-flow">
         <ReactFlow
@@ -143,7 +141,7 @@ export default function SchemaCanvas({
           defaultEdgeOptions={{ type: "smoothstep" }}
           proOptions={{ hideAttribution: true }}
         >
-          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#343b49" />
+          <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="#303744" />
           <Controls />
           <MiniMap
             pannable
@@ -152,6 +150,14 @@ export default function SchemaCanvas({
             maskColor="rgba(8, 10, 15, 0.72)"
           />
         </ReactFlow>
+        {!project.tables.length && (
+          <div className="canvas-first-node">
+            <span><Table2 size={18} /></span>
+            <strong>Start with your first table</strong>
+            <p>Add a table to begin mapping your database.</p>
+            <button type="button" onClick={onAddTable}><Plus size={14} /> Create table</button>
+          </div>
+        )}
       </div>
     </div>
   );
