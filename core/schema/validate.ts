@@ -46,6 +46,23 @@ export function validateProject(project: SqlProject): SchemaIssue[] {
     const targetColumn = target?.columns.find((column) => column.id === relation.targetColumnId);
     if (!source || !target || !sourceColumn || !targetColumn) {
       issues.push({ severity: "error", message: `Relationship ${relation.name} points to a missing table or column.` });
+      continue;
+    }
+
+    if (source.id === target.id) {
+      issues.push({ severity: "error", message: `Relationship ${relation.name} cannot reference the same table.` });
+    }
+
+    if (!targetColumn.primaryKey && !targetColumn.unique) {
+      issues.push({ severity: "error", message: `Referenced column ${target.name}.${targetColumn.name} must be a primary key or unique.` });
+    }
+
+    if (relation.onDelete === "SET NULL" && !sourceColumn.nullable) {
+      issues.push({ severity: "error", message: `Relationship ${relation.name} uses SET NULL, but ${source.name}.${sourceColumn.name} is NOT NULL.` });
+    }
+
+    if (sourceColumn.type !== targetColumn.type) {
+      issues.push({ severity: "warning", message: `Relationship ${relation.name} connects different column types (${sourceColumn.type} and ${targetColumn.type}).` });
     }
   }
 
