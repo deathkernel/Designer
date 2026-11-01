@@ -227,7 +227,7 @@ export default function Home() {
 
         <div className="content-area">
           {activeModule === "overview" ? (
-            <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onSwitchProject={setActiveProjectId}/>
+            <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }}/>
           ) : (
             <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={() => activeProject ? setShowItemCreate(true) : setShowCreate(true)} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")}/>
           )}
@@ -243,9 +243,9 @@ export default function Home() {
   );
 }
 
-function Dashboard({ projects, activeProject, aiState, totalItems, activeCount, onCreate, onSelect, onSwitchProject }: {
+function Dashboard({ projects, activeProject, aiState, totalItems, activeCount, onCreate, onSelect, onOpenProject }: {
   projects: Project[]; activeProject?: Project; aiState: AiState; totalItems: number; activeCount: number;
-  onCreate: () => void; onSelect: (id: ModuleId) => void; onSwitchProject: (id: string) => void;
+  onCreate: () => void; onSelect: (id: ModuleId) => void; onOpenProject: (id: string) => void;
 }) {
   return <div className="page-wrap">
     <div className="page-heading-row"><div><div className="eyebrow">YOUR PLANNING COMMAND CENTRE</div><h1>Make the complex <span>feel clear.</span></h1><p className="page-intro">Turn any idea into a clear outcome, a realistic plan and confident decisions.</p></div><button className="button button-primary" onClick={onCreate}><Plus size={16}/> New project</button></div>
@@ -260,7 +260,7 @@ function Dashboard({ projects, activeProject, aiState, totalItems, activeCount, 
     <div className="dashboard-grid">
       <section className="panel projects-panel"><div className="panel-heading"><div><h3>Projects</h3><p>Your planning workspaces</p></div><button className="icon-button" aria-label="Create a project" onClick={onCreate}><Plus size={17}/></button></div>
         <div className="project-table"><div className="project-table-head"><span>PROJECT</span><span>STATUS</span><span>UPDATED</span></div>
-          {projects.map((project) => <button className={"project-row " + (activeProject?.id === project.id ? "project-row-selected" : "")} key={project.id} onClick={() => onSwitchProject(project.id)}><span className="project-title-cell"><span className="project-icon"><FolderKanban size={16}/></span><span><strong>{project.name}</strong><small>{project.type}</small></span></span><span><StatusPill status={project.status}/></span><span className="updated-cell">{relativeTime(project.updatedAt)}</span></button>)}
+          {projects.map((project) => <button className={"project-row " + (activeProject?.id === project.id ? "project-row-selected" : "")} key={project.id} onClick={() => onOpenProject(project.id)} aria-label={"Open project " + project.name}><span className="project-title-cell"><span className="project-icon"><FolderKanban size={16}/></span><span><strong>{project.name}</strong><small>{project.type}</small></span></span><span><StatusPill status={project.status}/></span><span className="updated-cell">{relativeTime(project.updatedAt)}</span></button>)}
           {projects.length === 0 && <div className="empty-state"><span className="empty-icon"><FolderKanban size={22}/></span><strong>No projects yet</strong><p>Create a workspace to start defining outcomes, scope and the work ahead.</p><button className="button button-secondary" onClick={onCreate}><Plus size={14}/> Create first project</button></div>}
         </div><div className="panel-footer"><span>{projects.length} project{projects.length === 1 ? "" : "s"} in workspace</span><button className="text-button" onClick={onCreate}>Add project <ArrowRight size={14}/></button></div>
       </section>
