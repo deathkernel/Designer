@@ -79,7 +79,7 @@ Respond in clear structured Markdown. Be specific and useful. Ask only essential
           { role: "system", content: system },
           { role: "user", content: question }
         ],
-        options: { temperature: 0.25, num_ctx: 8192 }
+        options: { temperature: 0.25, num_ctx: 4096 }
       }),
       signal: AbortSignal.timeout(120000)
     });

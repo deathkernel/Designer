@@ -104,14 +104,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
 
-  const idea = text(input.idea, "", 10000);
-  if (idea.length < 20) {
-    return NextResponse.json({ error: "Describe the project idea in at least 20 characters so the planner has enough context." }, { status: 400 });
-  }
+  const idea = typeof input.idea === "string" ? input.idea.trim() : "";
   if (idea.length > 10000) {
     return NextResponse.json({ error: "Project idea is too long. Keep it under 10,000 characters." }, { status: 400 });
   }
-
+  if (idea.length < 20) {
+    return NextResponse.json({ error: "Describe the project idea in at least 20 characters so the planner has enough context." }, { status: 400 });
+  }
   const answers = input.answers && typeof input.answers === "object"
     ? Object.entries(input.answers).slice(0, 12).map(([question, answer]) => ({
         question: text(question, "Question"),
@@ -176,7 +175,7 @@ Quality rules:
           { role: "system", content: system },
           { role: "user", content: intakeContext }
         ],
-        options: { temperature: 0.2, num_ctx: 8192 }
+        options: { temperature: 0.2, num_ctx: 4096 }
       }),
       signal: AbortSignal.timeout(180000)
     });

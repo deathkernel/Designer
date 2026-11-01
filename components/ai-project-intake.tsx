@@ -173,7 +173,7 @@ export function AiProjectIntake({ project, onSave, onApplyWorkstreams }: Props) 
           <textarea value={answers[question.question] ?? ""} onChange={(event)=>updateAnswer(question.question,event.target.value)} placeholder="Your answer (optional)"/>
         </label>)}
         {analysis.openQuestions.length === 0 && <p className="intake-section-help">No blocking clarification questions were identified in this pass.</p>}
-        {analysis.openQuestions.length > 0 && <div className="intake-question-footer"><span>Answers are included the next time the plan is refined.</span><button type="button" className="button button-primary button-small" onClick={(event)=>{const form=event.currentTarget.closest(".intake-card")?.querySelector("form"); form?.requestSubmit();}} disabled={busy}><RefreshCw size={13}/> Refine with answers</button></div>}
+        {analysis.openQuestions.length > 0 && <div className="intake-question-footer"><span>Answers are included the next time the plan is refined.</span><button type="button" className="button button-primary button-small" onClick={(event)=>{const form=event.currentTarget.closest(".intake-card")?.querySelector<HTMLFormElement>("form"); form?.requestSubmit();}} disabled={busy}><RefreshCw size={13}/> Refine with answers</button></div>}
       </div>
 
       {analysis.evidenceNeeded.length > 0 && <div className="intake-evidence"><b>Evidence to verify</b><ul>{analysis.evidenceNeeded.map((item,index)=><li key={index}>{item}</li>)}</ul></div>}
