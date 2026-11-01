@@ -681,3 +681,91 @@ footer i{color:#a9c5ed}
  .pf-text-action{margin-left:43px}
  .pf-content footer{gap:8px;flex-wrap:wrap}
 }
+
+
+/* Dashboard readability refinement */
+.pf-dashboard {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.pf-sidebar .nav-caption {
+  font-size: 10px;
+  letter-spacing: .8px;
+}
+.pf-sidebar .nav {
+  min-height: 38px;
+  font-size: 12px;
+  gap: 10px;
+}
+.pf-sidebar .nav svg { width: 16px; height: 16px; }
+.pf-workspace b,
+.pf-profile b { font-size: 12px; }
+.pf-workspace small,
+.pf-profile small { font-size: 10px; }
+.pf-storage b { font-size: 11px; }
+.pf-storage small { font-size: 10px; line-height: 1.45; }
+.pf-topbar .crumb { font-size: 12px; }
+.pf-global-search { height: 34px; width: 235px; }
+.pf-global-search input { font-size: 12px; }
+.pf-global-search input::placeholder { color: #7d8997; }
+.pf-global-search kbd { font-size: 10px; }
+.pf-connection { font-size: 11px; }
+.pf-page-title .eyebrow { font-size: 10px; }
+.pf-page-title h1 { font-size: 29px; }
+.pf-page-title p { font-size: 13px; color: #647386; }
+.pf-dashboard .primary,
+.pf-dashboard .secondary { min-height: 37px; padding-inline: 14px; font-size: 12px; }
+.pf-metrics { gap: 13px; }
+.pf-metric { min-height: 102px; padding: 15px 17px; gap: 7px; }
+.pf-metric > span { font-size: 10px; letter-spacing: .55px; color: #667588; }
+.pf-metric > strong { font-size: 25px; }
+.pf-metric > small { font-size: 11px; color: #68788a; }
+.pf-metric .pf-metric-status { font-size: 18px; }
+.pf-section-heading h2 { font-size: 18px; }
+.pf-section-heading p { font-size: 12px; color: #657588; }
+.pf-project-actions > span { font-size: 10px; color: #667588; }
+.pf-table-head {
+  height: 42px;
+  font-size: 10px;
+  letter-spacing: .6px;
+  color: #667588;
+}
+.pf-project-item { min-height: 74px; }
+.pf-project-primary b { font-size: 13px; color: #202e3e; }
+.pf-project-primary small { font-size: 11px; color: #68788a; }
+.pf-dialect-tag { font-size: 10px; color: #4f647d; }
+.pf-updated { font-size: 11px; color: #617286; }
+.pf-open-project { width: 30px; height: 30px; }
+.pf-table-empty { font-size: 12px; color: #647588; }
+.pf-no-projects > b { font-size: 14px; color: #263649; }
+.pf-no-projects > p { font-size: 12px; color: #68788a; }
+.pf-start-panel { min-height: 66px; padding: 14px 16px; }
+.pf-start-panel b { font-size: 12px; color: #263649; }
+.pf-start-panel p { font-size: 11px; color: #68788a; line-height: 1.5; }
+.pf-text-action { font-size: 12px; }
+.pf-content footer { font-size: 10px; color: #68788a; }
+.pf-content footer > span:first-child { font-size: 10px; color: #5e6e80; }
+.pf-dashboard .modal-top h2 { font-size: 21px; }
+.pf-dashboard .modal-top p { font-size: 13px; }
+.pf-dashboard .modal form > label { font-size: 11px; }
+.pf-dashboard .field { font-size: 13px; }
+.pf-dashboard .dialect b { font-size: 13px; }
+.pf-dashboard .dialect small { font-size: 11px; line-height: 1.45; }
+@media (max-width: 760px) {
+  .pf-global-search { width: min(42vw, 190px); }
+  .pf-page-title h1 { font-size: 25px; }
+  .pf-page-title p { font-size: 12px; line-height: 1.5; }
+  .pf-metric > span { font-size: 9px; }
+  .pf-metric > small { font-size: 9px; line-height: 1.35; }
+  .pf-section-heading h2 { font-size: 16px; }
+  .pf-section-heading p { font-size: 11px; }
+  .pf-project-primary b { font-size: 12px; }
+  .pf-project-primary small { font-size: 10px; }
+  .pf-start-panel p { font-size: 10px; }
+}
+@media (max-width: 380px) {
+  .pf-metrics { grid-template-columns: 1fr 1fr; }
+  .pf-metric:last-child { grid-column: 1 / -1; }
+  .pf-topbar .crumb { font-size: 10px; }
+}
