@@ -23,7 +23,7 @@ function renderTable(table: SqlTable, project: SqlProject): string {
     : undefined;
 
   const lines = table.columns.map((column) => {
-    let type = columnType(column, project.dialect);
+    const type = columnType(column, project.dialect);
     const parts = [q(column.name), type];
 
     if (column.autoIncrement) {
