@@ -45,9 +45,9 @@ function TableNodeCard({ data, selected }: NodeProps<TableNodeType>) {
               {column.type}{column.type === "VARCHAR" ? `(${column.length ?? 255})` : ""}
             </span>
             <span className="diagram-column-rules">
-              {column.primaryKey && <i>PK</i>}
-              {column.unique && !column.primaryKey && <i>UQ</i>}
-              {!column.nullable && <i>NN</i>}
+              {column.primaryKey && <i className="marker-pk">PK</i>}
+              {column.unique && !column.primaryKey && <i className="marker-uq">UQ</i>}
+              {!column.nullable && <i className="marker-nn">NN</i>}
             </span>
           </div>
         ))}
