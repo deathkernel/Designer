@@ -36,22 +36,22 @@ const nodeHeight = 176;
 
 function makeStarterCanvas(project: Project): ProjectDesignCanvas {
   const blocks: ProjectDesignBlock[] = [
-    { id: crypto.randomUUID(), type: "vision", title: "The project north star", detail: project.objective || "What meaningful change should this project create?", x: 150, y: 190, status: "Shaping" },
-    { id: crypto.randomUUID(), type: "audience", title: "Who is this for?", detail: "Name the people who benefit, make decisions or contribute.", x: 530, y: 80, status: "Idea" },
-    { id: crypto.randomUUID(), type: "deliverable", title: "What will exist?", detail: "Describe the tangible outputs people can see, use or approve.", x: 930, y: 190, status: "Idea" },
-    { id: crypto.randomUUID(), type: "workstream", title: "How will we make it happen?", detail: "Group the work into a few clear streams of activity.", x: 530, y: 430, status: "Idea" },
-    { id: crypto.randomUUID(), type: "milestone", title: "First meaningful checkpoint", detail: "What is the first moment that proves the project is moving?", x: 1120, y: 470, status: "Idea" },
-    { id: crypto.randomUUID(), type: "risk", title: "What could get in the way?", detail: "Capture the biggest uncertainty before it becomes a surprise.", x: 150, y: 650, status: "Idea" },
-    { id: crypto.randomUUID(), type: "decision", title: "The first big decision", detail: "Record a choice that could change direction, cost or timing.", x: 800, y: 760, status: "Idea" }
+    { id: project.id + "-vision", type: "vision", title: "The project north star", detail: project.objective || "What meaningful change should this project create?", x: 150, y: 190, status: "Shaping" },
+    { id: project.id + "-audience", type: "audience", title: "Who is this for?", detail: "Name the people who benefit, make decisions or contribute.", x: 530, y: 80, status: "Idea" },
+    { id: project.id + "-deliverable", type: "deliverable", title: "What will exist?", detail: "Describe the tangible outputs people can see, use or approve.", x: 930, y: 190, status: "Idea" },
+    { id: project.id + "-workstream", type: "workstream", title: "How will we make it happen?", detail: "Group the work into a few clear streams of activity.", x: 530, y: 430, status: "Idea" },
+    { id: project.id + "-milestone", type: "milestone", title: "First meaningful checkpoint", detail: "What is the first moment that proves the project is moving?", x: 1120, y: 470, status: "Idea" },
+    { id: project.id + "-risk", type: "risk", title: "What could get in the way?", detail: "Capture the biggest uncertainty before it becomes a surprise.", x: 150, y: 650, status: "Idea" },
+    { id: project.id + "-decision", type: "decision", title: "The first big decision", detail: "Record a choice that could change direction, cost or timing.", x: 800, y: 760, status: "Idea" }
   ];
   return {
     blocks,
     connections: [
-      { id: crypto.randomUUID(), fromId: blocks[0].id, toId: blocks[2].id, label: "defines the outcome" },
-      { id: crypto.randomUUID(), fromId: blocks[1].id, toId: blocks[2].id, label: "shapes the output" },
-      { id: crypto.randomUUID(), fromId: blocks[3].id, toId: blocks[2].id, label: "creates" },
-      { id: crypto.randomUUID(), fromId: blocks[2].id, toId: blocks[4].id, label: "is validated at" },
-      { id: crypto.randomUUID(), fromId: blocks[5].id, toId: blocks[3].id, label: "may affect" }
+      { id: project.id + "-link-1", fromId: blocks[0].id, toId: blocks[2].id, label: "defines the outcome" },
+      { id: project.id + "-link-2", fromId: blocks[1].id, toId: blocks[2].id, label: "shapes the output" },
+      { id: project.id + "-link-3", fromId: blocks[3].id, toId: blocks[2].id, label: "creates" },
+      { id: project.id + "-link-4", fromId: blocks[2].id, toId: blocks[4].id, label: "is validated at" },
+      { id: project.id + "-link-5", fromId: blocks[5].id, toId: blocks[3].id, label: "may affect" }
     ]
   };
 }
@@ -374,7 +374,7 @@ export function ProjectDesignStudio({ project, canvas, onChange }: Props) {
         <aside className="design-inspector">
           {selectedBlock ? <>
             <div className="design-inspector-header"><div><span>OBJECT INSPECTOR</span><strong>Shape this block</strong></div><span className="design-inspector-icon"><IconFor type={selectedBlock.type}/></span></div>
-            <div className="design-inspector-type">{palette.find((entry) => entry.type === selectedBlock.type)?.label ?? "Project block"}</div>
+            <div className={"design-inspector-type design-accent-" + selectedBlock.type}>{palette.find((entry) => entry.type === selectedBlock.type)?.label ?? "Project block"}</div>
             <label className="design-field">Title<input value={selectedBlock.title} maxLength={100} onChange={(event) => updateBlock(selectedBlock.id, { title: event.target.value })}/></label>
             <label className="design-field">Description<textarea rows={6} value={selectedBlock.detail} maxLength={900} onChange={(event) => updateBlock(selectedBlock.id, { detail: event.target.value })}/></label>
             <label className="design-field">Progress state<select value={selectedBlock.status} onChange={(event) => updateBlock(selectedBlock.id, { status: event.target.value as ProjectDesignBlock["status"] })}><option>Idea</option><option>Shaping</option><option>Ready</option></select></label>

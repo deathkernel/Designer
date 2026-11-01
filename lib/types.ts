@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 export type ProjectStatus = "Planning" | "In progress" | "On hold" | "Completed";
 export type ModuleId =
-  | "overview" | "portfolio" | "brief" | "requirements" | "scope" | "work-breakdown" | "roadmap"
+  | "overview" | "portfolio" | "design-studio" | "brief" | "requirements" | "scope" | "work-breakdown" | "roadmap"
   | "timeline" | "milestones" | "resources" | "risks" | "security"
   | "testing" | "decisions" | "budget" | "feasibility" | "architecture"
   | "components" | "connections" | "data-flows" | "integrations"
