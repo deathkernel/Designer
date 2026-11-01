@@ -148,3 +148,51 @@
  .canvas-caption-copy{width:100%;justify-content:space-between}
  .canvas-actions{width:100%;justify-content:space-between}
 }
+
+
+/* Dashboard visual system — match the focused canvas workspace */
+.sidebar{width:220px;padding:21px 13px 13px;background:#0e1117;border-right-color:#202631}
+.main{margin-left:220px}
+.topbar{height:56px;padding:0 32px;background:#0d1016;border-bottom-color:#202631}
+.content{max-width:1320px;padding:31px 32px 22px}
+.heading-row{align-items:center;margin-bottom:22px}
+.heading-row h1{margin:7px 0 6px;font-size:30px;line-height:1.12;letter-spacing:-1.25px}
+.heading-row p{font-size:11px;color:#929baa}
+.hero{min-height:150px;grid-template-columns:1fr;overflow:hidden;border-color:#2c3340;border-radius:10px;background:linear-gradient(110deg,#171c26,#141923 65%,#1b1a28)}
+.hero-copy{padding:21px 24px}
+.hero-copy h2{margin:10px 0 6px;font-size:22px;line-height:1.12}
+.hero-copy>p{max-width:550px;margin-bottom:10px;font-size:10px}
+.hero-note{margin-top:9px}
+.hero-label{padding:5px 8px;font-size:8px}
+.hero-cta{min-height:30px;font-size:10px}
+.schema-art{display:none}
+.stats{gap:10px;margin:16px 0 25px}
+.stats>div{padding:13px 15px;border-color:#262e39;border-radius:8px;background:#11161e}
+.stats span{font-size:8px;letter-spacing:.8px}
+.stats b{margin:8px 0 3px;font-size:20px}
+.stats small{font-size:9px}
+.section-head{margin-bottom:12px}
+.section-head h3{margin:5px 0 3px;font-size:17px}
+.section-head p{font-size:10px}
+.project-list{gap:6px}
+.project-row{min-height:62px;padding:9px 13px;border-color:#29313d;border-radius:8px;background:#11161e}
+.project-row:hover{border-color:#514a70;background:#171c26}
+.project-icon{width:32px;height:32px;border-radius:7px;background:#28243a;color:#c5baff}
+.project-name b{font-size:10px}
+.project-name small{font-size:9px}
+.project-dialect{font-size:8px}
+.project-meta{font-size:9px}
+.empty{min-height:170px;border-color:#303947;border-radius:9px;background:#11161e}
+footer{margin-top:25px;padding-top:13px}
+@media(max-width:1050px){.sidebar{width:205px}.main{margin-left:205px}.content{padding:25px 22px}}
+@media(max-width:760px){
+ .sidebar{width:100%;padding:14px}
+ .main{margin-left:0}
+ .topbar{height:50px;padding:0 14px}
+ .content{padding:22px 14px}
+ .heading-row h1{font-size:26px}
+ .hero{min-height:0}
+ .hero-copy{padding:18px}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .stats>div{padding:9px}
+}
