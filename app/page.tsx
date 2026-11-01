@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowUpRight, Bell, Check, ChevronDown, CircleHelp, Code2,
+  ArrowUpRight, Bell, ChevronDown, CircleHelp, Code2,
   Command, Database, FolderKanban, HardDrive, LayoutGrid,
   Plus, Search, Settings2, Table2, Workflow, X, Clock3
 } from "lucide-react";
