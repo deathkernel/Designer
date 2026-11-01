@@ -77,3 +77,12 @@ The browser calls only local Next.js routes. Ollama settings remain server-side.
 ## Current limitations
 
 This is an iterative foundation, not the finished planning engine. Projects and intake analyses are stored in the current browser. The roadmap currently provides a compact Gantt-style timeline and deterministic dependency/critical-path calculations. Full drag-and-drop Gantt editing, resource capacity balancing, source-backed API research, automated cost estimation, export, cloud sync and collaborative workspaces are later milestones.
+
+
+## Execution control and project backups
+
+The AI roadmap includes an editable task workbench. Tasks can be added, edited, moved between phases, assigned an owner role, estimated, prioritized, and linked to predecessor tasks. Dependency cycles are rejected before changes are saved. The timeline supports dragging task bars to request a planned start offset; dependency constraints still determine the earliest valid start. The schedule, slack and critical path are recalculated from the saved roadmap.
+
+Roadmap completion updates the project's progress and status. Project status can also be changed manually from the workspace context strip.
+
+Use the dashboard's **Local project backup** controls to export all projects to a versioned JSON file or import a PlanForge backup as additional copies. Import never overwrites existing projects. Keep exported backups in a separate safe location; project data remains browser-local.

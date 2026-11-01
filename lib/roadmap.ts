@@ -72,7 +72,9 @@ export function calculateRoadmapSchedule(roadmap: ProjectRoadmap): RoadmapSchedu
   for (const id of order) {
     const task = byId.get(id);
     if (!task) continue;
-    const start = Math.max(0, ...task.dependsOn.map((dependencyId) => earliestFinish.get(dependencyId) ?? 0));
+    const requestedStart = Math.max(0, Math.floor(task.startOffsetDays ?? 0));
+    const dependencyFinish = Math.max(0, ...task.dependsOn.map((dependencyId) => earliestFinish.get(dependencyId) ?? 0));
+    const start = Math.max(requestedStart, dependencyFinish);
     earliestStart.set(id, start);
     earliestFinish.set(id, start + Math.max(1, task.durationDays));
   }

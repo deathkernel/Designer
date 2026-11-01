@@ -97,6 +97,7 @@ export type RoadmapTask = {
   priority: RoadmapPriority;
   dependsOn: string[];
   status: RoadmapTaskStatus;
+  startOffsetDays?: number;
 };
 
 export type RoadmapPhase = {

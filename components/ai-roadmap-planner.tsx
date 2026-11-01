@@ -10,6 +10,7 @@ import type {
   Project, ProjectRoadmap, RoadmapTaskStatus, PlanningItem
 } from "@/lib/types";
 import { addDays, calculateRoadmapSchedule, formatScheduleDate } from "@/lib/roadmap";
+import { RoadmapWorkbench } from "@/components/roadmap-workbench";
 
 type Props = {
   project: Project;
@@ -18,7 +19,7 @@ type Props = {
   onGoToBrief: () => void;
 };
 
-type RoadmapTab = "Roadmap" | "Timeline" | "Dependencies & resources";
+type RoadmapTab = "Roadmap" | "Timeline" | "Task editor" | "Dependencies & resources";
 
 function localToday() {
   const now = new Date();
@@ -171,7 +172,7 @@ export function AiRoadmapPlanner({ project, onSave, onApplyTasks, onGoToBrief }:
       </div>
 
       <div className="roadmap-tabs" role="tablist">
-        {(["Roadmap","Timeline","Dependencies & resources"] as RoadmapTab[]).map((value) => <button key={value} role="tab" aria-selected={tab === value} className={tab === value ? "roadmap-tab roadmap-tab-active" : "roadmap-tab"} onClick={() => setTab(value)}>{value}</button>)}
+        {(["Roadmap","Timeline","Task editor","Dependencies & resources"] as RoadmapTab[]).map((value) => <button key={value} role="tab" aria-selected={tab === value} className={tab === value ? "roadmap-tab roadmap-tab-active" : "roadmap-tab"} onClick={() => setTab(value)}>{value}</button>)}
         <button className="roadmap-export-placeholder" onClick={applyTasks}><ArrowDown size={13}/> Add tasks to Work Breakdown</button>
       </div>
 
@@ -231,6 +232,8 @@ export function AiRoadmapPlanner({ project, onSave, onApplyTasks, onGoToBrief }:
         </div>)}</div>
         <div className="gantt-legend"><span><i className="legend-critical"/> Critical path</span><span><i className="legend-standard"/> Other work</span><span><i className="legend-done"/> Completed</span></div>
       </div>}
+
+      {tab === "Task editor" && <RoadmapWorkbench roadmap={roadmap} schedule={schedule} onChange={onSave}/>}
 
       {tab === "Dependencies & resources" && <div className="roadmap-dependency-grid">
         <section className="roadmap-pane"><div className="roadmap-pane-heading"><div><h4>Task dependencies</h4><p>Predecessors, calculated slack and critical path.</p></div><GitBranch size={15}/></div>
