@@ -1517,3 +1517,31 @@ footer i{color:#a9c5ed}
 .sql-token-string { color: #2d8158; }
 .sql-token-number { color: #087b88; }
 .sql-token-comment { color: #8795a4; font-style: italic; }
+
+
+/* Keep field constraint meaning consistent across table editor and inspector */
+.forge-column-rules label {
+  padding: 4px 5px;
+  border-radius: 4px;
+  background: #f7f9fb;
+  font-weight: 650;
+}
+.forge-column-rules label.rule-pk { color: #356f9d; }
+.forge-column-rules label.rule-nn { color: #9a691e; }
+.forge-column-rules label.rule-uq { color: #7854a0; }
+.forge-inspector-column > span {
+  min-width: 18px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: #eaf3fa;
+  color: #356f9d;
+  font: 700 8px "DM Mono", monospace;
+}
+.forge-inspector-column > span.is-uq {
+  background: #f3eef9;
+  color: #7854a0;
+}
+.forge-inspector-column > span.is-column {
+  background: transparent;
+  color: #97a5b3;
+}
