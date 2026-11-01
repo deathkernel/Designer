@@ -3,7 +3,7 @@
 import { use, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft, Check, ChevronDown, Code2, Copy, Database, Download,
+  ArrowLeft, Check, Code2, Copy, Database, Download,
   MoreHorizontal, Plus, Settings2, Table2, Trash2, GitBranch, X
 } from "lucide-react";
 import { SqlColumn, SqlColumnType } from "@/core/schema/types";
