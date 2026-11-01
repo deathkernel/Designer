@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { SqlProject, SqlTable, SqlColumn, SqlRelation, SqlDialect } from "@/core/schema/types";
 import { createInitialProject } from "@/core/schema/initial-project";
+import { createId } from "@/core/schema/create-id";
 
 interface ProjectState {
   projects: SqlProject[];
@@ -66,10 +67,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
   addTable: (projectId, name) => {
     const table: SqlTable = {
-      id: crypto.randomUUID(),
+      id: createId(),
       name,
       columns: [{
-        id: crypto.randomUUID(), name: "id", type: "INT", nullable: false,
+        id: createId(), name: "id", type: "INT", nullable: false,
         primaryKey: true, unique: true, autoIncrement: true
       }],
       position: { x: 100 + get().projects.find((p) => p.id === projectId)!.tables.length * 40, y: 100 }
@@ -106,7 +107,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const table = project?.tables.find((item) => item.id === tableId);
     if (!project || !table) return;
     const column: SqlColumn = {
-      id: crypto.randomUUID(), name: `column_${table.columns.length + 1}`,
+      id: createId(), name: `column_${table.columns.length + 1}`,
       type: "VARCHAR", length: 255, nullable: true, primaryKey: false,
       unique: false, autoIncrement: false
     };
@@ -139,7 +140,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const project = get().projects.find((item) => item.id === projectId);
     if (!project) return;
     get().updateProject(projectId, {
-      relations: [...project.relations, { ...relation, id: crypto.randomUUID() }]
+      relations: [...project.relations, { ...relation, id: createId() }]
     });
   },
 
