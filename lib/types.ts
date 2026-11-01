@@ -201,7 +201,7 @@ export type NavItem = {
   id: ModuleId;
   label: string;
   icon: LucideIcon;
-  section: "CORE PLANNING" | "SPECIALIST PLANNING";
+  section: "CORE PLANNING" | "SPECIALIST PLANNING" | "ARCHITECTURE DESIGNER";
   children?: { id: ModuleId; label: string }[];
 };
 

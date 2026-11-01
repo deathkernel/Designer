@@ -15,6 +15,7 @@ import { ProjectBackup } from "@/components/project-backup";
 import { PortfolioIntelligence } from "@/components/portfolio-intelligence";
 import { PlanningStudio } from "@/components/planning-studio";
 import { ProjectDesignStudio } from "@/components/project-design-studio";
+import { ArchitectureDesigner } from "@/components/architecture-designer";
 import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectDesignCanvas, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
 
 type AiState = "checking" | "ready" | "model-missing" | "offline";
@@ -246,8 +247,8 @@ export default function Home() {
   const activeCount = projects.filter((project) => project.status !== "Completed").length;
 
   return (
-    <main className={"app-frame " + (activeModule === "design-studio" ? "app-frame-design" : "")}>
-      {activeModule !== "design-studio" && <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
+    <main className={"app-frame " + (activeModule === "design-studio" || activeModule === "architecture" ? "app-frame-design" : "")}>
+      {activeModule !== "design-studio" && activeModule !== "architecture" && <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
         <div className="brand-row">
           <div className="brand-mark"><Layers3 size={19}/></div>
           <div className="brand-copy"><span>PlanForge</span><small>PROJECT INTELLIGENCE</small></div>
@@ -279,9 +280,9 @@ export default function Home() {
         </div>
       </aside>}
 
-      {activeModule !== "design-studio" && mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
-      <section className={"main-shell " + (activeModule === "design-studio" ? "main-shell-design" : "")}>
-        {activeModule !== "design-studio" && <header className="topbar">
+      {activeModule !== "design-studio" && activeModule !== "architecture" && mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
+      <section className={"main-shell " + (activeModule === "design-studio" || activeModule === "architecture" ? "main-shell-design" : "")}>
+        {activeModule !== "design-studio" && activeModule !== "architecture" && <header className="topbar">
           <div className="topbar-left"><button className="icon-button mobile-menu" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu size={19}/></button><div className="breadcrumb"><span>Workspace</span><ChevronRight size={14}/><strong>{meta.title}</strong></div></div>
           <div className="topbar-actions">
             {projects.length > 0 && <label className="project-picker"><FolderKanban size={15}/><select aria-label="Active project" value={activeProjectId} onChange={(event) => setActiveProjectId(event.target.value)}>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select><ChevronDown size={13}/></label>}
@@ -292,13 +293,13 @@ export default function Home() {
           </div>
         </header>}
 
-        <div className={"content-area " + (activeModule === "design-studio" ? "content-area-design" : "")}>
+        <div className={"content-area " + (activeModule === "design-studio" || activeModule === "architecture" ? "content-area-design" : "")}>
           {activeModule === "overview" ? (
             <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("design-studio"); }} onImportProjects={(imported) => { setProjects((current) => [...imported, ...current]); notify(imported.length + " project(s) restored from backup"); }}/>
           ) : activeModule === "portfolio" ? (
             <PortfolioIntelligence projects={projects} onUpdateProject={updateProjectById} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }}/>
           ) : (
-            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={openCreateItem} onEditItem={openEditItem} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")} onGoToRoadmap={() => chooseModule("roadmap")}/>
+            <ModuleWorkspace moduleId={activeModule} project={activeProject} projects={projects} activeProjectId={activeProjectId} onSelectProject={setActiveProjectId} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={openCreateItem} onEditItem={openEditItem} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")} onGoToRoadmap={() => chooseModule("roadmap")}/>
           )}
         </div>
       </section>
@@ -359,10 +360,8 @@ function StatusPill({ status }: { status: ProjectStatus }) {
   return <span className={"status-pill " + cls}><span/>{status}</span>;
 }
 
-const architectureModules: ModuleId[] = ["architecture", "components", "connections", "data-flows", "integrations", "api-planner", "call-flows", "tool-selection"];
-
-function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onCreateItem, onEditItem, onUpdateProject, onRemoveItem, onAsk, onGoToBrief, onGoToRoadmap }: {
-  moduleId: ModuleId; project?: Project; activeTab: string; onTabChange: (tab: string) => void; onBack: () => void; onCreateItem: () => void; onEditItem: (item: PlanningItem) => void;
+function ModuleWorkspace({ moduleId, project, projects, activeProjectId, onSelectProject, activeTab, onTabChange, onBack, onCreateItem, onEditItem, onUpdateProject, onRemoveItem, onAsk, onGoToBrief, onGoToRoadmap }: {
+  moduleId: ModuleId; project?: Project; projects: Project[]; activeProjectId: string; onSelectProject: (id: string) => void; activeTab: string; onTabChange: (tab: string) => void; onBack: () => void; onCreateItem: () => void; onEditItem: (item: PlanningItem) => void;
   onUpdateProject: (patch: Partial<Project>) => void; onRemoveItem: (id: string) => void;
   onAsk: () => void; onGoToBrief: () => void; onGoToRoadmap: () => void;
 }) {
@@ -370,6 +369,19 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
   const Icon = meta.icon;
   const items = project?.items.filter((item) => item.moduleId === moduleId) ?? [];
   const notes = project?.notes[moduleId] ?? "";
+
+  if (moduleId === "architecture") {
+    return <ArchitectureDesigner
+      project={project}
+      projects={projects}
+      activeProjectId={activeProjectId}
+      onSelectProject={onSelectProject}
+      onBack={onBack}
+      onAsk={onAsk}
+      onUpdateProject={onUpdateProject}
+      onRemoveItem={onRemoveItem}
+    />;
+  }
 
   if (moduleId === "design-studio" && project) {
     return <div className="design-page">
@@ -387,26 +399,6 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
       </header>
       <ProjectDesignStudio key={project.id} project={project} canvas={project.designCanvas} onChange={(designCanvas: ProjectDesignCanvas) => onUpdateProject({ designCanvas })}/>
     </div>;
-  }
-
-  function addStudioItem(title: string, detail: string, metadata: Record<string, string | number | boolean>) {
-    if (!project) return;
-    const item: PlanningItem = {
-      id: crypto.randomUUID(),
-      moduleId,
-      title,
-      detail,
-      createdAt: new Date().toISOString(),
-      metadata
-    };
-    onUpdateProject({ items: [...project.items, item] });
-  }
-
-  function updateStudioItem(id: string, patch: Partial<PlanningItem>) {
-    if (!project) return;
-    onUpdateProject({
-      items: project.items.map((item) => item.id === id ? { ...item, ...patch } : item)
-    });
   }
 
   return <div className="page-wrap module-page">
