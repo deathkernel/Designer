@@ -1,6 +1,6 @@
 import {
   AlertTriangle, BookOpen, Boxes, CalendarDays, ChartNoAxesCombined,
-  ClipboardList, FileText, Flag, GitBranch, GitMerge, Gauge, KeyRound,
+  ClipboardList, FileText, Flag, GitBranch, GitMerge, Gauge, KeyRound, Layers3,
   LayoutDashboard, Network, PlugZap, ShieldCheck, TestTube2, Target, Users,
   Wallet, Workflow, Wrench
 } from "lucide-react";
@@ -8,6 +8,7 @@ import type { ModuleId, ModuleMeta, NavItem } from "@/lib/types";
 
 export const navigation: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, section: "CORE PLANNING" },
+  { id: "design-studio", label: "Design Studio", icon: Layers3, section: "CORE PLANNING" },
   { id: "portfolio", label: "Portfolio intelligence", icon: ChartNoAxesCombined, section: "CORE PLANNING" },
   { id: "brief", label: "Project definition", icon: ClipboardList, section: "CORE PLANNING", children: [
     { id: "brief", label: "Project brief" }, { id: "requirements", label: "Requirements" },
@@ -37,6 +38,7 @@ export const navigation: NavItem[] = [
 
 export const moduleMeta: Record<ModuleId, ModuleMeta> = {
   overview: { title: "Project overview", eyebrow: "WORKSPACE", description: "A clear view of the work, decisions, dependencies and risks shaping this project.", icon: Gauge, tabs: ["Summary","Activity"], shortLabel: "Overview", prompts: ["Clarify the intended outcome","Identify the next decision","Review what is blocked"] },
+  "design-studio": { title: "Project Design Studio", eyebrow: "CREATIVE WORKSPACE", description: "Shape the project visually. Arrange the moving parts, connect ideas and build a blueprint you can explore.", icon: Layers3, tabs: ["Canvas"], shortLabel: "Design block", prompts: ["Make the intended outcome visible","Connect the people, work and deliverables","Show how the pieces depend on one another"] },
   portfolio: { title: "Portfolio intelligence", eyebrow: "WORKSPACE INTELLIGENCE", description: "Connect project health, budget exposure, shared capacity and delivery bottlenecks across the workspace.", icon: ChartNoAxesCombined, tabs: ["Overview"], shortLabel: "Portfolio", prompts: ["Review at-risk projects","Check shared resource capacity","Resolve schedule bottlenecks"] },
   brief: { title: "Project brief", eyebrow: "PROJECT DEFINITION", description: "Define the need, intended outcome, boundaries and measures of success.", icon: FileText, tabs: ["Overview","Objectives","Success criteria"], shortLabel: "Brief", prompts: ["What problem are we solving?","Who benefits from the outcome?","How will success be measured?"] },
   requirements: { title: "Requirements", eyebrow: "PROJECT DEFINITION", description: "Capture needs, expectations, acceptance criteria and non-functional constraints.", icon: ClipboardList, tabs: ["All requirements","Functional","Non-functional","Acceptance"], shortLabel: "Requirement", prompts: ["Separate must-haves from nice-to-haves","Make each requirement testable","Record its source and priority"] },

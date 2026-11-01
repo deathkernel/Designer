@@ -151,6 +151,33 @@ export type ProjectResourceAllocation = {
   hoursPerWeek: number;
 };
 
+
+export type ProjectDesignBlockType =
+  | "vision" | "audience" | "deliverable" | "workstream" | "milestone"
+  | "risk" | "decision" | "resource" | "system" | "note";
+
+export type ProjectDesignBlock = {
+  id: string;
+  type: ProjectDesignBlockType;
+  title: string;
+  detail: string;
+  x: number;
+  y: number;
+  status: "Idea" | "Shaping" | "Ready";
+};
+
+export type ProjectDesignConnection = {
+  id: string;
+  fromId: string;
+  toId: string;
+  label: string;
+};
+
+export type ProjectDesignCanvas = {
+  blocks: ProjectDesignBlock[];
+  connections: ProjectDesignConnection[];
+};
+
 export type Project = {
   id: string;
   name: string;
@@ -165,6 +192,7 @@ export type Project = {
   roadmap?: ProjectRoadmap;
   budgetPlan?: ProjectBudgetPlan;
   resourceAllocations?: ProjectResourceAllocation[];
+  designCanvas?: ProjectDesignCanvas;
 };
 
 export type NavItem = {

@@ -14,7 +14,8 @@ import { AiRoadmapPlanner } from "@/components/ai-roadmap-planner";
 import { ProjectBackup } from "@/components/project-backup";
 import { PortfolioIntelligence } from "@/components/portfolio-intelligence";
 import { PlanningStudio } from "@/components/planning-studio";
-import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
+import { ProjectDesignStudio } from "@/components/project-design-studio";
+import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectDesignCanvas, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
 
 type AiState = "checking" | "ready" | "model-missing" | "offline";
 type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -121,8 +122,8 @@ export default function Home() {
     setProjectName("");
     setProjectType("General project");
     setShowCreate(false);
-    chooseModule("brief");
-    notify("Project workspace created");
+    chooseModule("design-studio");
+    notify("Project design studio created");
   }
 
   function updateProject(patch: Partial<Project>) {
@@ -235,7 +236,7 @@ export default function Home() {
 
         <div className="content-area">
           {activeModule === "overview" ? (
-            <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }} onImportProjects={(imported) => { setProjects((current) => [...imported, ...current]); notify(imported.length + " project(s) restored from backup"); }}/>
+            <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("design-studio"); }} onImportProjects={(imported) => { setProjects((current) => [...imported, ...current]); notify(imported.length + " project(s) restored from backup"); }}/>
           ) : activeModule === "portfolio" ? (
             <PortfolioIntelligence projects={projects} onUpdateProject={updateProjectById} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }}/>
           ) : (
@@ -309,6 +310,17 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
   const Icon = meta.icon;
   const items = project?.items.filter((item) => item.moduleId === moduleId) ?? [];
   const notes = project?.notes[moduleId] ?? "";
+
+  if (moduleId === "design-studio" && project) {
+    return <div className="page-wrap design-page">
+      <div className="module-breadcrumb"><button onClick={onBack}>Workspace</button><ChevronRight size={13}/><span>CREATIVE WORKSPACE</span></div>
+      <div className="design-page-heading">
+        <div><div className="eyebrow">PROJECT BLUEPRINT · {project.type.toUpperCase()}</div><h1>{project.name}</h1><p>Design the moving parts of this project in one visual space.</p></div>
+        <button className="button button-secondary" onClick={onAsk}><Sparkles size={15}/> Ask Qwen</button>
+      </div>
+      <ProjectDesignStudio key={project.id} project={project} canvas={project.designCanvas} onChange={(designCanvas: ProjectDesignCanvas) => onUpdateProject({ designCanvas })}/>
+    </div>;
+  }
 
   function addStudioItem(title: string, detail: string, metadata: Record<string, string | number | boolean>) {
     if (!project) return;
