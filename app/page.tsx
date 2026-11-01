@@ -304,7 +304,7 @@ export default function Home() {
       </section>
 
       {showCreate && <CreateProjectModal name={projectName} type={projectType} setName={setProjectName} setType={setProjectType} onClose={() => setShowCreate(false)} onSubmit={createProject}/>}
-      {showItemCreate && <CreateItemModal moduleId={activeModule} editing={Boolean(editingItemId)} values={{itemTitle,itemDetail,itemSource,itemDestination,itemTrigger,itemTool,itemInput,itemOutput,itemFailure}} setters={{setItemTitle,setItemDetail,setItemSource,setItemDestination,setItemTrigger,setItemTool,setItemInput,setItemOutput,setItemFailure}} metadata={itemMetadata} setMetadata={setItemMetadata} onClose={() => { setShowItemCreate(false); resetItemDraft(); }} onSubmit={addPlanningItem}/>
+      {showItemCreate && <CreateItemModal moduleId={activeModule} editing={Boolean(editingItemId)} values={{itemTitle,itemDetail,itemSource,itemDestination,itemTrigger,itemTool,itemInput,itemOutput,itemFailure}} setters={{setItemTitle,setItemDetail,setItemSource,setItemDestination,setItemTrigger,setItemTool,setItemInput,setItemOutput,setItemFailure}} metadata={itemMetadata} setMetadata={setItemMetadata} onClose={() => { setShowItemCreate(false); resetItemDraft(); }} onSubmit={addPlanningItem}/>}
       {showSettings && <SettingsModal aiState={aiState} onClose={() => setShowSettings(false)} onRefresh={refreshAi}/>}
       {showAssistant && <AssistantModal project={activeProject} moduleTitle={meta.title} aiState={aiState} messages={chatMessages} input={chatInput} busy={chatBusy} setInput={setChatInput} onClose={() => setShowAssistant(false)} onSubmit={sendToPlanner}/>}
       {toast && <div className="toast"><Check size={15}/>{toast}</div>}
