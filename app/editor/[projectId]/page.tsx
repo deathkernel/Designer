@@ -4,7 +4,7 @@ import { use, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft, Check, ChevronRight, Code2, Copy, Database, Download,
-  GitBranch, HardDrive, LayoutDashboard, Plus, Search, Settings2,
+  GitBranch, HardDrive, Plus, Settings2,
   ShieldCheck, Table2, Trash2, X, Workflow
 } from "lucide-react";
 import type { SqlColumn, SqlColumnType, SqlDialect } from "@/core/schema/types";
@@ -82,7 +82,6 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
   function createTable() {
     if (!project) return;
     addTable(project.id, `table_${project.tables.length + 1}`);
-    setView("tables");
   }
 
   function createRelation() {
