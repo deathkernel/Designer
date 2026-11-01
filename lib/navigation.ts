@@ -8,6 +8,7 @@ import type { ModuleId, ModuleMeta, NavItem } from "@/lib/types";
 
 export const navigation: NavItem[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, section: "CORE PLANNING" },
+  { id: "portfolio", label: "Portfolio intelligence", icon: ChartNoAxesCombined, section: "CORE PLANNING" },
   { id: "brief", label: "Project definition", icon: ClipboardList, section: "CORE PLANNING", children: [
     { id: "brief", label: "Project brief" }, { id: "requirements", label: "Requirements" },
     { id: "scope", label: "Scope & boundaries" }, { id: "work-breakdown", label: "Work breakdown" }
@@ -36,6 +37,7 @@ export const navigation: NavItem[] = [
 
 export const moduleMeta: Record<ModuleId, ModuleMeta> = {
   overview: { title: "Project overview", eyebrow: "WORKSPACE", description: "A clear view of the work, decisions, dependencies and risks shaping this project.", icon: Gauge, tabs: ["Summary","Activity"], shortLabel: "Overview", prompts: ["Clarify the intended outcome","Identify the next decision","Review what is blocked"] },
+  portfolio: { title: "Portfolio intelligence", eyebrow: "WORKSPACE INTELLIGENCE", description: "Connect project health, budget exposure, shared capacity and delivery bottlenecks across the workspace.", icon: ChartNoAxesCombined, tabs: ["Overview"], shortLabel: "Portfolio", prompts: ["Review at-risk projects","Check shared resource capacity","Resolve schedule bottlenecks"] },
   brief: { title: "Project brief", eyebrow: "PROJECT DEFINITION", description: "Define the need, intended outcome, boundaries and measures of success.", icon: FileText, tabs: ["Overview","Objectives","Success criteria"], shortLabel: "Brief", prompts: ["What problem are we solving?","Who benefits from the outcome?","How will success be measured?"] },
   requirements: { title: "Requirements", eyebrow: "PROJECT DEFINITION", description: "Capture needs, expectations, acceptance criteria and non-functional constraints.", icon: ClipboardList, tabs: ["All requirements","Functional","Non-functional","Acceptance"], shortLabel: "Requirement", prompts: ["Separate must-haves from nice-to-haves","Make each requirement testable","Record its source and priority"] },
   scope: { title: "Scope & boundaries", eyebrow: "PROJECT DEFINITION", description: "Make explicit what is included, excluded, assumed and constrained.", icon: Target, tabs: ["In scope","Out of scope","Constraints","Assumptions"], shortLabel: "Scope item", prompts: ["State inclusions and exclusions","Record hard constraints","Separate facts from assumptions"] },

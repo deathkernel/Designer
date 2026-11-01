@@ -12,6 +12,7 @@ import { readProjects, writeProjects } from "@/lib/storage";
 import { AiProjectIntake } from "@/components/ai-project-intake";
 import { AiRoadmapPlanner } from "@/components/ai-roadmap-planner";
 import { ProjectBackup } from "@/components/project-backup";
+import { PortfolioIntelligence } from "@/components/portfolio-intelligence";
 import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
 
 type AiState = "checking" | "ready" | "model-missing" | "offline";
@@ -129,6 +130,11 @@ export default function Home() {
       ? { ...project, ...patch, updatedAt: new Date().toISOString() } : project));
   }
 
+  function updateProjectById(projectId: string, patch: Partial<Project>) {
+    setProjects((current) => current.map((project) => project.id === projectId
+      ? { ...project, ...patch, updatedAt: new Date().toISOString() } : project));
+  }
+
   function addPlanningItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!activeProject || !itemTitle.trim()) return;
@@ -229,6 +235,8 @@ export default function Home() {
         <div className="content-area">
           {activeModule === "overview" ? (
             <Dashboard projects={projects} activeProject={activeProject} aiState={aiState} totalItems={totalItems} activeCount={activeCount} onCreate={() => setShowCreate(true)} onSelect={chooseModule} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }} onImportProjects={(imported) => { setProjects((current) => [...imported, ...current]); notify(imported.length + " project(s) restored from backup"); }}/>
+          ) : activeModule === "portfolio" ? (
+            <PortfolioIntelligence projects={projects} onUpdateProject={updateProjectById} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }}/>
           ) : (
             <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={() => activeProject ? setShowItemCreate(true) : setShowCreate(true)} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")}/>
           )}

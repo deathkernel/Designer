@@ -86,3 +86,10 @@ The AI roadmap includes an editable task workbench. Tasks can be added, edited, 
 Roadmap completion updates the project's progress and status. Project status can also be changed manually from the workspace context strip.
 
 Use the dashboard's **Local project backup** controls to export all projects to a versioned JSON file or import a PlanForge backup as additional copies. Import never overwrites existing projects. Keep exported backups in a separate safe location; project data remains browser-local.
+
+
+## Portfolio intelligence
+
+Portfolio Intelligence aggregates local project records into a cross-project command centre. It provides rule-based project health signals from intake readiness, roadmap dependency blockers, high-priority open tasks and target-date outlook. Budget records are stored per project and totals are grouped by currency so unlike currencies are not added together. Resource assignments can be shared across projects; matching resource names are combined to show overall allocation and over-capacity warnings. Bottleneck signals highlight blocked tasks, critical high-priority work and tasks with multiple downstream dependencies.
+
+Health scores are planning signals, not guarantees. Budget, hours and allocations are manually entered estimates; the dashboard does not infer actual financial or human-resource data.

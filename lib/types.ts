@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 export type ProjectStatus = "Planning" | "In progress" | "On hold" | "Completed";
 export type ModuleId =
-  | "overview" | "brief" | "requirements" | "scope" | "work-breakdown" | "roadmap"
+  | "overview" | "portfolio" | "brief" | "requirements" | "scope" | "work-breakdown" | "roadmap"
   | "timeline" | "milestones" | "resources" | "risks" | "security"
   | "testing" | "decisions" | "budget" | "feasibility" | "architecture"
   | "components" | "connections" | "data-flows" | "integrations"
@@ -135,6 +135,21 @@ export type ProjectRoadmap = {
   externalConstraints: string[];
 };
 
+export type ProjectBudgetPlan = {
+  currency: string;
+  estimatedAmount: number;
+  actualSpent: number;
+  contingencyPercent: number;
+};
+
+export type ProjectResourceAllocation = {
+  id: string;
+  resourceName: string;
+  role: string;
+  allocationPercent: number;
+  hoursPerWeek: number;
+};
+
 export type Project = {
   id: string;
   name: string;
@@ -147,6 +162,8 @@ export type Project = {
   items: PlanningItem[];
   intake?: ProjectIntake;
   roadmap?: ProjectRoadmap;
+  budgetPlan?: ProjectBudgetPlan;
+  resourceAllocations?: ProjectResourceAllocation[];
 };
 
 export type NavItem = {
