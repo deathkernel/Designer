@@ -132,18 +132,24 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
         <div className="forge-topbar-left">
           <button className="forge-back" onClick={() => router.push("/")} aria-label="Back to dashboard"><ArrowLeft size={15} /></button>
           <span className="forge-brand-mark"><Database size={15} /></span>
-          <span className="forge-brand-name">projectforge</span>
+          <span className="forge-brand-lockup">
+            <strong>ProjectForge</strong>
+            <small>DATABASE DESIGN</small>
+          </span>
           <span className="forge-top-divider" />
-          <input
-            className="forge-project-name"
-            aria-label="Project name"
-            value={project.name}
-            onChange={(event) => updateProject(project.id, { name: event.target.value })}
-          />
+          <label className="forge-project-field">
+            <span>PROJECT</span>
+            <input
+              className="forge-project-name"
+              aria-label="Project name"
+              value={project.name}
+              onChange={(event) => updateProject(project.id, { name: event.target.value })}
+            />
+          </label>
           <span className="forge-dialect">{project.dialect}</span>
         </div>
         <div className="forge-topbar-right">
-          <span className="forge-saved"><Check size={12} /> All changes saved locally</span>
+          <span className="forge-saved"><Check size={13} /><span><b>Saved</b><small>Locally in this browser</small></span></span>
           <button className="forge-settings-button" onClick={() => setView("settings")}><Settings2 size={14} /> Settings</button>
         </div>
       </header>
@@ -188,10 +194,15 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
 
         <section className="forge-main">
           <div className="forge-page-heading">
-            <div>
+            <div className="forge-heading-copy">
               <span className="forge-eyebrow">{page.eyebrow}</span>
               <h1>{page.title}</h1>
               <p>{page.description}</p>
+              <div className="forge-page-meta">
+                <span><i /> {project.tables.length} tables</span>
+                <span>{project.relations.length} relationships</span>
+                <span>{project.dialect.toUpperCase()}</span>
+              </div>
             </div>
             {(view === "canvas" || view === "tables") && (
               <button className="forge-primary" onClick={createTable}><Plus size={15} /> New table</button>
