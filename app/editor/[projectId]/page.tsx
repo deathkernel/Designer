@@ -95,7 +95,7 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
           </div>
           {project.tables.length < 2 ? <div className="relation-empty">Add at least two tables to create a relationship.</div> : <>
             <div className="relation-builder">
-              <div className="relation-field"><label>FROM TABLE</label><select value={sourceTable?.id ?? ""} onChange={(event)=>{setSourceTableId(event.target.value);setSourceColumnId("");}}>{project.tables.map((table)=><option key={table.id} value={table.id}>{table.name}</option>)}</select></div>
+              <div className="relation-field"><label>FROM TABLE</label><select value={sourceTable?.id ?? ""} onChange={(event)=>{setSourceTableId(event.target.value);setSourceColumnId("");setTargetTableId("");setTargetColumnId("");}}>{project.tables.map((table)=><option key={table.id} value={table.id}>{table.name}</option>)}</select></div>
               <div className="relation-field"><label>FOREIGN KEY COLUMN</label><select value={sourceColumn?.id ?? ""} onChange={(event)=>setSourceColumnId(event.target.value)}>{(sourceTable?.columns ?? []).map((column)=><option key={column.id} value={column.id}>{column.name}</option>)}</select></div>
               <div className="relation-arrow"><GitBranch size={17}/></div>
               <div className="relation-field"><label>REFERENCES TABLE</label><select value={targetTable?.id ?? ""} onChange={(event)=>{setTargetTableId(event.target.value);setTargetColumnId("");}}>{project.tables.filter((table)=>table.id !== sourceTable?.id).map((table)=><option key={table.id} value={table.id}>{table.name}</option>)}</select></div>
