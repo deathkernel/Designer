@@ -1,53 +1,72 @@
-# ProjectForge
+# PlanForge
 
-**ProjectForge** is a visual engineering workspace for designing software projects before implementation.
+PlanForge is an **all-purpose project planning and project intelligence workspace**. It helps turn ideas into structured, reviewable plans across business, education, research, events, operations, construction, community, personal and software projects.
 
-The product will be developed in deliberate stages. The first release is focused exclusively on SQL database design.
+It is not a SQL designer and it is not a coding assistant. Technical architecture, databases, APIs and integrations are optional specialist planning areas only when relevant to a project.
 
-## Product roadmap
+## Product principles
 
-### Phase 1 — Simple SQL Designer (current MVP)
-- Create and manage database projects.
-- Add tables and columns.
-- Configure column data types, nullability, primary keys, unique constraints, and defaults.
-- Define foreign-key relationships between tables.
-- Inspect a visual entity-relationship diagram.
-- Generate and copy SQL DDL.
-- Save and reopen projects locally.
+- Deep planning with a clean, progressive-disclosure interface.
+- Adapt modules to the project domain; do not force technical workflows.
+- Local-first project workspaces using browser storage.
+- Local Qwen model through Ollama for planning conversations.
+- Public APIs and external services are considered only when needed and verified against authoritative documentation.
+- Distinguish facts, assumptions, estimates, recommendations and open questions.
+- Keep credentials server-side.
 
-Initial SQL dialect target: PostgreSQL, with the model designed to support additional dialects later.
+## Current foundation
 
-### Phase 2 — Intermediate SQL Studio
-- Multiple SQL dialects.
-- Indexes, check constraints, composite keys.
-- SQL import and schema reverse engineering.
-- Schema validation and relationship analysis.
-- Migration and schema diff tools.
+- General project creation and local persistence.
+- Nested navigation for definition, execution, governance, evaluation, systems/processes, integrations and documentation.
+- Project-specific planning items and working notes.
+- Specialist connection records support source, destination, trigger, tool/method, inputs, outputs and failure/fallback.
+- Ollama status check and Qwen chat endpoint.
 
-### Phase 3 — Advanced Database Engineering
-- Query builder and query workspace.
-- Views, functions, triggers and procedures.
-- Migration history and dependency graph.
-- Collaboration, versioning and advanced exports.
-- Optional AI assistance (not part of the initial releases).
+## Local setup
 
-## Technology direction
+Requirements: Node.js 20.9+ and Ollama.
 
-- Next.js / React / TypeScript
-- React Flow for visual schema editing
-- Zustand for client state
-- Zod for schema validation
-- IndexedDB for local-first persistence in the MVP
-- PostgreSQL and a backend service can be introduced when accounts and cloud sync are needed
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
 
-## Development principles
+On Windows CMD:
 
-1. Ship a focused, reliable SQL tool before expanding scope.
-2. Keep the database schema model independent from UI components.
-3. Validate data before saving or generating SQL.
-4. Never silently discard user changes.
-5. Keep the MVP usable without accounts, AI APIs, or a remote database.
+```cmd
+copy .env.example .env.local
+```
 
-## Status
+Open http://localhost:3000.
 
-Phase 1 — planning and foundation.
+Make sure Ollama is running and the model is installed:
+
+```cmd
+ollama list
+ollama run hf.co/bartowski/Qwen_Qwen3.5-9B-GGUF:Q6_K
+```
+
+Default local model configuration:
+
+```env
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=hf.co/bartowski/Qwen_Qwen3.5-9B-GGUF:Q6_K
+```
+
+## AI endpoints
+
+- `GET /api/ai/status` checks whether Ollama is reachable and whether the configured model appears in `/api/tags`.
+- `POST /api/ai/chat` sends the current project context and planning question to Ollama's `/api/chat` endpoint.
+
+The browser calls only local Next.js routes. Ollama settings remain server-side. No public external API is called automatically in this foundation.
+
+## Planning areas
+
+**Core planning:** project brief, requirements, scope, work breakdown, timeline, milestones, resources, risk register, security, quality/testing, decisions, budget and feasibility.
+
+**Specialist planning:** architecture, components, connections, information flows, integrations, API planning, call sequences and tool selection.
+
+## Current limitations
+
+This is the first foundation, not the finished planning engine. Projects and notes are stored in the current browser. Advanced Gantt calculations, dependency validation, interactive visual canvases, source-backed API research, exports, cloud sync and collaborative workspaces are later milestones.

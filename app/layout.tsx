@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ProjectForge SQL — Visual Database Designer",
-  description: "Design database schemas visually and generate SQL."
+  title: "PlanForge — Project Intelligence Workspace",
+  description: "Plan projects of any kind with structured thinking, clear dependencies and connected decisions."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <html lang="en"><body>{children}</body></html>;
 }
