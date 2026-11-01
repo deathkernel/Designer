@@ -73,7 +73,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         id: createId(), name: "id", type: "INT", nullable: false,
         primaryKey: true, unique: true, autoIncrement: true
       }],
-      position: { x: 100 + get().projects.find((p) => p.id === projectId)!.tables.length * 40, y: 100 }
+      position: {
+        x: 100 + ((get().projects.find((p) => p.id === projectId)?.tables.length ?? 0) % 3) * 360,
+        y: 100 + Math.floor((get().projects.find((p) => p.id === projectId)?.tables.length ?? 0) / 3) * 250
+      }
     };
     get().updateProject(projectId, {
       tables: [...(get().projects.find((p) => p.id === projectId)?.tables ?? []), table]
