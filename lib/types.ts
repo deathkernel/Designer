@@ -164,6 +164,8 @@ export type ProjectDesignBlock = {
   x: number;
   y: number;
   status: "Idea" | "Shaping" | "Ready";
+  color?: "blue" | "violet" | "mint" | "amber" | "coral" | "slate";
+  width?: number;
 };
 
 export type ProjectDesignConnection = {

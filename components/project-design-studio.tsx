@@ -145,22 +145,43 @@ export function ProjectDesignStudio({ project, canvas, onChange }: Props) {
   }
 
   function handleCanvasPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    const target = event.target as HTMLElement;
-    if (target.closest("[data-interactive='true']")) return;
+    const target = event.target as Element;
+    if (target.closest("[data-interactive='true'], [data-block-id]")) return;
 
-    const node = target.closest<HTMLElement>("[data-block-id]");
-    if (connectMode && node) {
-      const blockId = node.dataset.blockId ?? "";
+    setSelectedId("");
+    setSelectedConnectionId("");
+    interactionRef.current = {
+      kind: "pan",
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      startX: viewport.x,
+      startY: viewport.y
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handleNodePointerDown(event: ReactPointerEvent<HTMLElement>, blockId: string) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (connectMode) {
       if (!connectSourceId) {
         setConnectSourceId(blockId);
         setSelectedId(blockId);
-      } else if (connectSourceId !== blockId) {
+        setSelectedConnectionId("");
+        return;
+      }
+
+      if (connectSourceId !== blockId) {
         const exists = draftRef.current.connections.some((connection) =>
           connection.fromId === connectSourceId && connection.toId === blockId
         );
         if (!exists) {
           const nextConnection: ProjectDesignConnection = {
-            id: crypto.randomUUID(), fromId: connectSourceId, toId: blockId, label: "depends on"
+            id: crypto.randomUUID(),
+            fromId: connectSourceId,
+            toId: blockId,
+            label: "depends on"
           };
           commit({ ...draftRef.current, connections: [...draftRef.current.connections, nextConnection] });
           setSelectedConnectionId(nextConnection.id);
@@ -169,28 +190,22 @@ export function ProjectDesignStudio({ project, canvas, onChange }: Props) {
         setConnectSourceId("");
         setConnectMode(false);
       }
-      event.preventDefault();
       return;
     }
 
-    if (node) {
-      const id = node.dataset.blockId ?? "";
-      const block = draftRef.current.blocks.find((entry) => entry.id === id);
-      if (!block) return;
-      setSelectedId(id);
-      setSelectedConnectionId("");
-      interactionRef.current = {
-        kind: "move", id, pointerX: event.clientX, pointerY: event.clientY,
-        startX: block.x, startY: block.y
-      };
-    } else {
-      setSelectedId("");
-      setSelectedConnectionId("");
-      interactionRef.current = {
-        kind: "pan", pointerX: event.clientX, pointerY: event.clientY,
-        startX: viewport.x, startY: viewport.y
-      };
-    }
+    const block = draftRef.current.blocks.find((entry) => entry.id === blockId);
+    if (!block) return;
+
+    setSelectedId(blockId);
+    setSelectedConnectionId("");
+    interactionRef.current = {
+      kind: "move",
+      id: blockId,
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      startX: block.x,
+      startY: block.y
+    };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
@@ -333,7 +348,7 @@ export function ProjectDesignStudio({ project, canvas, onChange }: Props) {
                   const from = blocks.find((block) => block.id === connection.fromId);
                   const to = blocks.find((block) => block.id === connection.toId);
                   if (!from || !to) return null;
-                  const sx = from.x + nodeWidth;
+                  const sx = from.x + (from.width ?? nodeWidth);
                   const sy = from.y + nodeHeight / 2;
                   const tx = to.x;
                   const ty = to.y + nodeHeight / 2;
@@ -352,8 +367,10 @@ export function ProjectDesignStudio({ project, canvas, onChange }: Props) {
                 return <article
                   key={block.id}
                   data-block-id={block.id}
-                  className={"design-node design-accent-" + block.type + (selectedId === block.id ? " node-selected" : "") + (connectSourceId === block.id ? " node-connect-source" : "")}
-                  style={{ left: block.x, top: block.y, width: nodeWidth, minHeight: nodeHeight }}
+                  className={"design-node design-accent-" + block.type + " design-color-" + (block.color ?? "auto") + (selectedId === block.id ? " node-selected" : "") + (connectSourceId === block.id ? " node-connect-source" : "")}
+                  style={{ left: block.x, top: block.y, width: block.width ?? nodeWidth, minHeight: nodeHeight }}
+                  onPointerDown={(event) => handleNodePointerDown(event, block.id)}
+                  title={connectMode ? 'Choose this block as a connection endpoint' : 'Drag to move · Select to customize'}
                 >
                   <div className="design-node-topline"><span className="design-node-icon"><Icon size={15}/></span><span>{definition.label}</span><i className={"design-status-dot status-" + block.status.toLowerCase()}/><small>{block.status}</small></div>
                   <h3>{block.title}</h3>
@@ -378,6 +395,13 @@ export function ProjectDesignStudio({ project, canvas, onChange }: Props) {
             <label className="design-field">Title<input value={selectedBlock.title} maxLength={100} onChange={(event) => updateBlock(selectedBlock.id, { title: event.target.value })}/></label>
             <label className="design-field">Description<textarea rows={6} value={selectedBlock.detail} maxLength={900} onChange={(event) => updateBlock(selectedBlock.id, { detail: event.target.value })}/></label>
             <label className="design-field">Progress state<select value={selectedBlock.status} onChange={(event) => updateBlock(selectedBlock.id, { status: event.target.value as ProjectDesignBlock["status"] })}><option>Idea</option><option>Shaping</option><option>Ready</option></select></label>
+            <div className="design-inspector-subheading">APPEARANCE</div>
+            <label className="design-field">Accent colour<select value={selectedBlock.color ?? "auto"} onChange={(event) => updateBlock(selectedBlock.id, { color: event.target.value === "auto" ? undefined : event.target.value as ProjectDesignBlock["color"] })}>
+              <option value="auto">Match block type</option><option value="blue">Ocean blue</option><option value="violet">Violet</option><option value="mint">Mint</option><option value="amber">Amber</option><option value="coral">Coral</option><option value="slate">Slate</option>
+            </select></label>
+            <label className="design-field design-width-field">Card width <strong>{selectedBlock.width ?? nodeWidth}px</strong>
+              <input type="range" min="220" max="380" step="10" value={selectedBlock.width ?? nodeWidth} onChange={(event) => updateBlock(selectedBlock.id, { width: Number(event.target.value) })}/>
+            </label>
             <div className="design-inspector-actions">
               <button type="button" data-interactive="true" onClick={duplicateBlock}><Copy size={13}/> Duplicate</button>
               <button type="button" data-interactive="true" className="design-delete-action" onClick={removeSelectedBlock}><Trash2 size={13}/> Delete</button>
