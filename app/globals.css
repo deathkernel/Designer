@@ -1489,3 +1489,31 @@ footer i{color:#a9c5ed}
     padding-right: 6px;
   }
 }
+
+
+/* Explicit semantic tokens for constraints, SQL and validation */
+.diagram-column-rules i.marker-pk {
+  border-color: #d5e4f1;
+  background: #eaf3fa;
+  color: #316a96;
+}
+.diagram-column-rules i.marker-uq {
+  border-color: #e2d8f0;
+  background: #f3eef9;
+  color: #7653a0;
+}
+.diagram-column-rules i.marker-nn {
+  border-color: #efdfc0;
+  background: #fff5e4;
+  color: #9b6818;
+}
+.forge-check-summary > div:first-child strong { color: #2f8150; }
+.forge-check-summary > div:first-child strong.has-errors { color: #c44743; }
+.forge-inspector-column:nth-of-type(2n) > span { color: #477eaa; }
+.forge-inspector-column > span { color: #477eaa; }
+.sql-token-keyword { color: #2e6796; font-weight: 700; }
+.sql-token-type { color: #805ca8; font-weight: 600; }
+.sql-token-constraint { color: #a36d1a; font-weight: 600; }
+.sql-token-string { color: #2d8158; }
+.sql-token-number { color: #087b88; }
+.sql-token-comment { color: #8795a4; font-style: italic; }
