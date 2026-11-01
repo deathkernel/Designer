@@ -1,5 +1,5 @@
 import {
-  Activity, AlertTriangle, BookOpen, Boxes, CalendarDays, ChartNoAxesCombined,
+  AlertTriangle, BookOpen, Boxes, CalendarDays, ChartNoAxesCombined,
   ClipboardList, FileText, Flag, GitBranch, GitMerge, Gauge, KeyRound,
   LayoutDashboard, Network, PlugZap, ShieldCheck, TestTube2, Target, Users,
   Wallet, Workflow, Wrench

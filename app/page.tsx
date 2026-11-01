@@ -2,12 +2,10 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
-  Activity, AlertTriangle, ArrowRight, ArrowUpRight, Bot, CalendarDays,
-  Check, ChevronDown, ChevronRight, CircleHelp, ClipboardList, Clock3,
-  FileText, Flag, FolderKanban, Gauge, GitBranch, GitMerge, HardDrive,
-  KeyRound, Layers3, LayoutDashboard, ListTodo, Menu, Network, PlugZap,
-  Plus, Search, Send, Settings2, ShieldCheck, Sparkles, Target, TestTube2,
-  Trash2, Users, Wallet, Workflow, Wrench, X, BookOpen, Boxes
+  ArrowRight, ArrowUpRight, Bot, Boxes, CalendarDays, Check, ChevronDown,
+  ChevronRight, CircleHelp, ClipboardList, FolderKanban, Gauge, GitMerge,
+  HardDrive, Layers3, ListTodo, Menu, Plus, Search, Send, Settings2,
+  ShieldCheck, Sparkles, Target, Trash2, Workflow, X, type LucideIcon
 } from "lucide-react";
 import { navigation, moduleMeta } from "@/lib/navigation";
 import { readProjects, writeProjects } from "@/lib/storage";
@@ -276,11 +274,11 @@ function Dashboard({ projects, activeProject, aiState, totalItems, activeCount, 
   </div>;
 }
 
-function Metric({ icon: Icon, label, value, hint, tone }: { icon: typeof Gauge; label: string; value: string; hint: string; tone: string }) {
+function Metric({ icon: Icon, label, value, hint, tone }: { icon: LucideIcon; label: string; value: string; hint: string; tone: string }) {
   return <div className="metric-card"><div className={"metric-icon metric-" + tone}><Icon size={17}/></div><div className="metric-label">{label}</div><div className="metric-value">{value}</div><div className="metric-hint">{hint}</div></div>;
 }
 
-function QuickAction({ icon: Icon, title, description, onClick }: { icon: typeof Gauge; title: string; description: string; onClick: () => void }) {
+function QuickAction({ icon: Icon, title, description, onClick }: { icon: LucideIcon; title: string; description: string; onClick: () => void }) {
   return <button className="quick-action" onClick={onClick}><span className="quick-action-icon"><Icon size={17}/></span><span className="quick-action-copy"><strong>{title}</strong><small>{description}</small></span><ArrowUpRight size={15} className="quick-arrow"/></button>;
 }
 
