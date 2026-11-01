@@ -85,7 +85,7 @@ function RequirementMatrix({ items, onAdd, onUpdate, onRemove }: Pick<Props, "it
       <tbody>{items.map((item) => <tr key={item.id}>
         <td><strong>{item.title}</strong><small>{item.detail || "Add acceptance criteria in the item details."}</small></td>
         <td><select value={String(readMeta(item,"category","Functional"))} onChange={(event) => writeMeta(item,"category",event.target.value,onUpdate)}><option>Functional</option><option>Non-functional</option><option>Constraint</option><option>Compliance</option></select></td>
-        <td><select value={String(readMeta(item,"priority","Must have"))} onChange={(event) => writeMeta(item,"priority",event.target.value,onUpdate)}><option>Must have</option><option>Should have</option><option>Could have</option><option>Won't have</option></select></td>
+        <td><select value={String(readMeta(item,"priority","Must have"))} onChange={(event) => writeMeta(item,"priority",event.target.value,onUpdate)}><option>Must have</option><option>Should have</option><option>Could have</option><option>Won&#39;t have</option></select></td>
         <td><select value={String(readMeta(item,"status","Proposed"))} onChange={(event) => writeMeta(item,"status",event.target.value,onUpdate)}><option>Proposed</option><option>Reviewed</option><option>Approved</option><option>Implemented</option><option>Verified</option></select></td>
         <td><button className="studio-icon-action" title="Remove requirement" onClick={() => onRemove(item.id)}><Trash2 size={14}/></button></td>
       </tr>)}</tbody>
