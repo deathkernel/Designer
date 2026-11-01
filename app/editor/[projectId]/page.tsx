@@ -3,28 +3,55 @@
 import { use, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft, Check, Code2, Copy, Database, Download,
-  MoreHorizontal, Plus, Settings2, Table2, Trash2, GitBranch, X
+  ArrowLeft, Check, ChevronRight, Code2, Copy, Database, Download,
+  GitBranch, HardDrive, LayoutDashboard, Plus, Search, Settings2,
+  ShieldCheck, Table2, Trash2, X, Workflow
 } from "lucide-react";
-import { SqlColumn, SqlColumnType } from "@/core/schema/types";
+import type { SqlColumn, SqlColumnType, SqlDialect } from "@/core/schema/types";
+import { SQL_COLUMN_TYPES } from "@/core/schema/types";
 import { generateSql } from "@/core/sql/generate-sql";
 import { validateProject } from "@/core/schema/validate";
-import { SQL_COLUMN_TYPES } from "@/core/schema/types";
 import { useProjectStore } from "@/stores/project-store";
 import SchemaCanvas from "./schema-canvas";
+
+type WorkspaceView = "canvas" | "tables" | "relationships" | "sql" | "validation" | "settings";
+
+const navigation: { group: string; items: { id: WorkspaceView; label: string; icon: typeof Table2 }[] }[] = [
+  { group: "DESIGN", items: [
+    { id: "canvas", label: "Visual canvas", icon: Workflow },
+    { id: "tables", label: "Tables", icon: Table2 },
+    { id: "relationships", label: "Relationships", icon: GitBranch }
+  ]},
+  { group: "DEVELOP", items: [
+    { id: "sql", label: "SQL studio", icon: Code2 }
+  ]},
+  { group: "QUALITY", items: [
+    { id: "validation", label: "Schema checks", icon: ShieldCheck }
+  ]}
+];
+
+const viewCopy: Record<WorkspaceView, { eyebrow: string; title: string; description: string }> = {
+  canvas: { eyebrow: "SCHEMA DESIGNER / CANVAS", title: "Visual canvas", description: "Arrange tables and follow the connections between them." },
+  tables: { eyebrow: "SCHEMA DESIGNER / TABLES", title: "Tables", description: "Define columns, data types and constraints for each table." },
+  relationships: { eyebrow: "SCHEMA DESIGNER / RELATIONSHIPS", title: "Relationships", description: "Connect foreign-key columns to referenced primary or unique keys." },
+  sql: { eyebrow: "SQL STUDIO", title: "Generated SQL", description: "Review, copy or export the SQL generated from this schema." },
+  validation: { eyebrow: "QUALITY / SCHEMA CHECKS", title: "Schema validation", description: "Review structural issues before exporting your database schema." },
+  settings: { eyebrow: "PROJECT", title: "Project settings", description: "Manage the project name, description and SQL dialect." }
+};
 
 export default function EditorPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = use(params);
   const router = useRouter();
-  const [tab, setTab] = useState<"schema" | "sql">("schema");
-  const [schemaView, setSchemaView] = useState<"tables" | "diagram">("diagram");
-  const [copied, setCopied] = useState(false);
+  const [view, setView] = useState<WorkspaceView>("canvas");
+  const [selectedTableId, setSelectedTableId] = useState("");
   const [hydrated, setHydrated] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [sourceTableId, setSourceTableId] = useState("");
   const [sourceColumnId, setSourceColumnId] = useState("");
   const [targetTableId, setTargetTableId] = useState("");
   const [targetColumnId, setTargetColumnId] = useState("");
   const [onDelete, setOnDelete] = useState<"CASCADE" | "SET NULL" | "RESTRICT" | "NO ACTION">("CASCADE");
+
   const hydrate = useProjectStore((state) => state.hydrate);
   const project = useProjectStore((state) => state.projects.find((item) => item.id === projectId));
   const addTable = useProjectStore((state) => state.addTable);
@@ -37,30 +64,39 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
   const addRelation = useProjectStore((state) => state.addRelation);
   const deleteRelation = useProjectStore((state) => state.deleteRelation);
 
-  useEffect(() => { hydrate(); setHydrated(true); }, [hydrate]);
+  useEffect(() => {
+    hydrate();
+    setHydrated(true);
+  }, [hydrate]);
+
   const sql = useMemo(() => project ? generateSql(project) : "", [project]);
   const issues = useMemo(() => project ? validateProject(project) : [], [project]);
+  const selectedTable = project?.tables.find((table) => table.id === selectedTableId) ?? project?.tables[0];
   const sourceTable = project?.tables.find((table) => table.id === sourceTableId) ?? project?.tables[0];
   const targetTable = project?.tables.find((table) => table.id === targetTableId) ?? project?.tables.find((table) => table.id !== sourceTable?.id);
   const sourceColumn = sourceTable?.columns.find((column) => column.id === sourceColumnId) ?? sourceTable?.columns[0];
   const targetColumn = targetTable?.columns.find((column) => column.id === targetColumnId) ?? targetTable?.columns[0];
+  const errorCount = issues.filter((issue) => issue.severity === "error").length;
+  const warningCount = issues.filter((issue) => issue.severity === "warning").length;
+
+  function createTable() {
+    if (!project) return;
+    addTable(project.id, `table_${project.tables.length + 1}`);
+    setView("tables");
+  }
 
   function createRelation() {
     if (!project || !sourceTable || !targetTable || !sourceColumn || !targetColumn) return;
     if (sourceTable.id === targetTable.id) return;
-    const relationName = `fk_${sourceTable.name}_${sourceColumn.name}_${targetTable.name}`;
+
     addRelation(project.id, {
-      name: relationName,
+      name: `fk_${sourceTable.name}_${sourceColumn.name}_${targetTable.name}`,
       sourceTableId: sourceTable.id,
       sourceColumnId: sourceColumn.id,
       targetTableId: targetTable.id,
       targetColumnId: targetColumn.id,
       onDelete
     });
-    setSourceTableId(sourceTable.id);
-    setSourceColumnId(sourceColumn.id);
-    setTargetTableId(targetTable.id);
-    setTargetColumnId(targetColumn.id);
   }
 
   async function copySql() {
@@ -80,52 +116,319 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
   }
 
   if (!hydrated) return <main className="editor-loading">Opening database workspace…</main>;
-  if (!project) return <main className="editor-loading"><Database size={25}/><h2>Project not found</h2><p>This project may have been removed or is saved in another browser.</p><button className="secondary" onClick={()=>router.push("/")}>Back to workspace</button></main>;
+  if (!project) return (
+    <main className="editor-loading">
+      <Database size={25} />
+      <h2>Project not found</h2>
+      <p>This project may have been removed or is saved in another browser.</p>
+      <button className="secondary" onClick={() => router.push("/")}>Back to workspace</button>
+    </main>
+  );
 
-  return <main className="editor-shell">
-    <header className="editor-topbar"><button className="back-button" onClick={()=>router.push("/")}><ArrowLeft size={16}/> Workspace</button><span className="editor-divider">/</span><div className="editor-project"><Database size={16}/><input aria-label="Project name" value={project.name} onChange={(event)=>updateProject(project.id,{name:event.target.value})}/></div><span className="dialect-badge">{project.dialect}</span><span className="save-state"><Check size={13}/> Saved locally</span><button className="editor-icon" aria-label="Project options"><MoreHorizontal size={18}/></button></header>
-    <div className="editor-body">
-      <aside className="editor-sidebar"><span className="editor-side-title">DATABASE</span><button className="editor-side-item active"><Table2 size={16}/>Tables <b>{project.tables.length}</b></button><button className="editor-side-item" onClick={()=>setTab("schema")}><Settings2 size={16}/>Schema settings</button><div className="editor-side-bottom"><span>SQL DIALECT</span><b>{project.dialect}</b><small>Phase 1 · Simple SQL designer</small></div></aside>
-      <section className="editor-content">
-        <div className="editor-heading"><div><span className="eyebrow">SCHEMA WORKSPACE</span><h1>{project.name}</h1><p>{project.description || "Define your tables, columns and relationships."}</p></div>{schemaView === "tables" && <button className="primary" onClick={()=>{const tableName=`table_${project.tables.length+1}`;addTable(project.id,tableName);}}><Plus size={16}/> Add table</button>}</div>
-        <div className="editor-tabs"><button className={tab==="schema" && schemaView==="diagram"?"active":""} onClick={()=>{setTab("schema");setSchemaView("diagram");}}><GitBranch size={15}/> Canvas</button><button className={tab==="schema" && schemaView==="tables"?"active":""} onClick={()=>{setTab("schema");setSchemaView("tables");}}><Table2 size={15}/> Tables</button><button className={tab==="sql"?"active":""} onClick={()=>setTab("sql")}><Code2 size={15}/> SQL preview</button><span className="tab-spacer"/><span className="table-count">{project.tables.length} TABLES</span></div>
-        {tab==="schema" ? (schemaView === "diagram" ? <SchemaCanvas project={project} onPositionChange={(tableId,position)=>updateTable(project.id,tableId,{position})} onAddTable={()=>addTable(project.id,`table_${project.tables.length+1}`)}/> : <div className="schema-workspace"><div className="schema-toolbar"><span>TABLES <b>{project.tables.length}</b></span><button className="mini-action" onClick={()=>addTable(project.id,`table_${project.tables.length+1}`)}><Plus size={14}/> Add table</button></div>{project.tables.length ? <div className="table-grid">{project.tables.map((table)=><article className="table-card" key={table.id}><div className="table-card-head"><span className="table-title-icon"><Table2 size={15}/></span><input aria-label="Table name" value={table.name} onChange={(event)=>updateTable(project.id,table.id,{name:event.target.value})}/><button title="Delete table" className="delete-btn" onClick={()=>{if(window.confirm(`Delete table "${table.name}"?`))deleteTable(project.id,table.id);}}><Trash2 size={14}/></button></div><div className="column-head"><span>COLUMN</span><span>TYPE</span><span>RULES</span><span/></div>{table.columns.map((column)=><ColumnRow key={column.id} column={column} projectId={project.id} tableId={table.id} updateColumn={updateColumn} deleteColumn={deleteColumn}/>) }<button className="add-column" onClick={()=>addColumn(project.id,table.id)}><Plus size={14}/> Add column</button></article>)}</div> : <div className="schema-empty"><div><Database size={27}/></div><h3>No tables yet</h3><p>Add your first table to begin designing the database schema.</p><button className="primary" onClick={()=>addTable(project.id,"users")}><Plus size={15}/> Create first table</button></div>}</div>) : <div className="sql-panel"><div className="sql-panel-head"><div><b>Generated SQL</b><span>DDL · {project.dialect.toUpperCase()}</span></div><div><button className="secondary" onClick={copySql}><Copy size={14}/>{copied?"Copied":"Copy SQL"}</button><button className="primary" onClick={downloadSql}><Download size={14}/> Download .sql</button></div></div><pre className="sql-code"><code>{sql || "-- Add a table to generate SQL."}</code></pre></div>}
-        {tab === "schema" && schemaView === "tables" && <section className="relations-panel">
-          <div className="relations-heading">
-            <div><span className="eyebrow">FOREIGN KEYS</span><h2>Table relationships</h2><p>Connect a column in one table to a referenced column in another.</p></div>
-            <span className="relation-count">{project.relations.length} RELATIONSHIPS</span>
+  const page = viewCopy[view];
+
+  return (
+    <main className="forge-workspace">
+      <header className="forge-topbar">
+        <div className="forge-topbar-left">
+          <button className="forge-back" onClick={() => router.push("/")} aria-label="Back to dashboard"><ArrowLeft size={15} /></button>
+          <span className="forge-brand-mark"><Database size={15} /></span>
+          <span className="forge-brand-name">projectforge</span>
+          <span className="forge-top-divider" />
+          <input
+            className="forge-project-name"
+            aria-label="Project name"
+            value={project.name}
+            onChange={(event) => updateProject(project.id, { name: event.target.value })}
+          />
+          <span className="forge-dialect">{project.dialect}</span>
+        </div>
+        <div className="forge-topbar-right">
+          <span className="forge-saved"><Check size={12} /> All changes saved locally</span>
+          <button className="forge-settings-button" onClick={() => setView("settings")}><Settings2 size={14} /> Settings</button>
+        </div>
+      </header>
+
+      <div className="forge-layout">
+        <aside className="forge-nav">
+          <div className="forge-nav-project">
+            <div className="forge-project-avatar">{project.name.slice(0, 1).toUpperCase()}</div>
+            <div className="forge-project-meta"><strong>{project.name}</strong><span>{project.dialect.toUpperCase()} DATABASE</span></div>
+            <ChevronRight size={13} />
           </div>
-          {project.tables.length < 2 ? <div className="relation-empty">Add at least two tables to create a relationship.</div> : <>
-            <div className="relation-builder">
-              <div className="relation-field"><label>FROM TABLE</label><select value={sourceTable?.id ?? ""} onChange={(event)=>{setSourceTableId(event.target.value);setSourceColumnId("");setTargetTableId("");setTargetColumnId("");}}>{project.tables.map((table)=><option key={table.id} value={table.id}>{table.name}</option>)}</select></div>
-              <div className="relation-field"><label>FOREIGN KEY COLUMN</label><select value={sourceColumn?.id ?? ""} onChange={(event)=>setSourceColumnId(event.target.value)}>{(sourceTable?.columns ?? []).map((column)=><option key={column.id} value={column.id}>{column.name}</option>)}</select></div>
-              <div className="relation-arrow"><GitBranch size={17}/></div>
-              <div className="relation-field"><label>REFERENCES TABLE</label><select value={targetTable?.id ?? ""} onChange={(event)=>{setTargetTableId(event.target.value);setTargetColumnId("");}}>{project.tables.filter((table)=>table.id !== sourceTable?.id).map((table)=><option key={table.id} value={table.id}>{table.name}</option>)}</select></div>
-              <div className="relation-field"><label>REFERENCED COLUMN</label><select value={targetColumn?.id ?? ""} onChange={(event)=>setTargetColumnId(event.target.value)}>{(targetTable?.columns ?? []).map((column)=><option key={column.id} value={column.id}>{column.name}</option>)}</select></div>
-              <div className="relation-field on-delete-field"><label>ON DELETE</label><select value={onDelete} onChange={(event)=>setOnDelete(event.target.value as typeof onDelete)}><option value="CASCADE">CASCADE</option><option value="RESTRICT">RESTRICT</option><option value="SET NULL">SET NULL</option><option value="NO ACTION">NO ACTION</option></select></div>
-              <button className="primary relation-add" onClick={createRelation} disabled={!sourceColumn || !targetColumn}><Plus size={14}/> Add relation</button>
+
+          {navigation.map((section) => (
+            <div className="forge-nav-section" key={section.group}>
+              <span className="forge-nav-label">{section.group}</span>
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    className={view === item.id ? "forge-nav-item active" : "forge-nav-item"}
+                    onClick={() => setView(item.id)}
+                  >
+                    <Icon size={15} />
+                    <span>{item.label}</span>
+                    {item.id === "tables" && <small>{project.tables.length}</small>}
+                    {item.id === "relationships" && <small>{project.relations.length}</small>}
+                    {item.id === "validation" && errorCount > 0 && <i>{errorCount}</i>}
+                  </button>
+                );
+              })}
             </div>
-          </>}
-          {project.relations.length > 0 && <div className="relation-list">{project.relations.map((relation)=>{
-            const fromTable = project.tables.find((table)=>table.id===relation.sourceTableId);
-            const toTable = project.tables.find((table)=>table.id===relation.targetTableId);
-            const fromColumn = fromTable?.columns.find((column)=>column.id===relation.sourceColumnId);
-            const toColumn = toTable?.columns.find((column)=>column.id===relation.targetColumnId);
-            return <div className="relation-item" key={relation.id}><span className="relation-icon"><GitBranch size={14}/></span><div className="relation-path"><b>{fromTable?.name}.{fromColumn?.name}</b><span>references</span><b>{toTable?.name}.{toColumn?.name}</b></div><span className="relation-rule">ON DELETE {relation.onDelete}</span><button className="delete-btn" title="Delete relationship" onClick={()=>deleteRelation(project.id,relation.id)}><X size={14}/></button></div>;
-          })}</div>}
-        </section>}
-        <section className="validation"><div><span className="eyebrow">SCHEMA CHECK</span><b>{issues.filter((issue)=>issue.severity==="error").length ? "Needs attention" : "No blocking errors"}</b></div><span>{issues.length} findings</span>{issues.slice(0,3).map((issue,index)=><p key={index} className={issue.severity}>{issue.severity.toUpperCase()} · {issue.message}</p>)}{!issues.length && <p className="clean">Your current schema has no validation findings.</p>}</section>
-      </section>
-    </div>
-  </main>;
+          ))}
+
+          <div className="forge-nav-bottom">
+            <button className={view === "settings" ? "forge-nav-item active" : "forge-nav-item"} onClick={() => setView("settings")}>
+              <Settings2 size={15} /><span>Project settings</span>
+            </button>
+            <div className="forge-local-status"><HardDrive size={14} /><span><b>Local workspace</b><small>Stored in this browser</small></span><i /></div>
+          </div>
+        </aside>
+
+        <section className="forge-main">
+          <div className="forge-page-heading">
+            <div>
+              <span className="forge-eyebrow">{page.eyebrow}</span>
+              <h1>{page.title}</h1>
+              <p>{page.description}</p>
+            </div>
+            {(view === "canvas" || view === "tables") && (
+              <button className="forge-primary" onClick={createTable}><Plus size={15} /> New table</button>
+            )}
+            {view === "sql" && (
+              <div className="forge-heading-actions">
+                <button className="forge-secondary" onClick={copySql}><Copy size={14} />{copied ? "Copied" : "Copy SQL"}</button>
+                <button className="forge-primary" onClick={downloadSql}><Download size={14} /> Export .sql</button>
+              </div>
+            )}
+          </div>
+
+          {view === "canvas" && (
+            <div className="forge-canvas-frame">
+              <SchemaCanvas
+                project={project}
+                onPositionChange={(tableId, position) => updateTable(project.id, tableId, { position })}
+                onAddTable={createTable}
+                onSelectTable={setSelectedTableId}
+              />
+              <div className="forge-canvas-footer">
+                <span><i /> LIVE SCHEMA</span>
+                <span>{project.tables.length} tables <b>·</b> {project.relations.length} relationships</span>
+              </div>
+            </div>
+          )}
+
+          {view === "tables" && (
+            <div className="forge-tables-view">
+              {project.tables.length ? project.tables.map((table) => (
+                <article className="forge-table-editor" key={table.id}>
+                  <header>
+                    <span className="forge-table-icon"><Table2 size={15} /></span>
+                    <input aria-label="Table name" value={table.name} onChange={(event) => updateTable(project.id, table.id, { name: event.target.value })} />
+                    <span>{table.columns.length} COLUMNS</span>
+                    <button className="forge-icon-danger" title="Delete table" onClick={() => {
+                      if (window.confirm(`Delete table "${table.name}"?`)) deleteTable(project.id, table.id);
+                    }}><Trash2 size={14} /></button>
+                  </header>
+                  <div className="forge-column-header"><span>NAME</span><span>DATA TYPE</span><span>CONSTRAINTS</span><span /></div>
+                  {table.columns.map((column) => (
+                    <ColumnRow
+                      key={column.id}
+                      column={column}
+                      projectId={project.id}
+                      tableId={table.id}
+                      updateColumn={updateColumn}
+                      deleteColumn={deleteColumn}
+                    />
+                  ))}
+                  <button className="forge-add-column" onClick={() => addColumn(project.id, table.id)}><Plus size={13} /> Add column</button>
+                </article>
+              )) : (
+                <div className="forge-empty-state">
+                  <span><Table2 size={21} /></span>
+                  <h3>No tables yet</h3>
+                  <p>Create your first table to start defining the schema.</p>
+                  <button className="forge-primary" onClick={createTable}><Plus size={14} /> Create table</button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {view === "relationships" && (
+            <div className="forge-panel">
+              <div className="forge-panel-title"><div><h2>Foreign key connections</h2><p>Choose the source column and the referenced key.</p></div><span>{project.relations.length} TOTAL</span></div>
+              {project.tables.length < 2 ? (
+                <div className="forge-empty-inline">Create at least two tables before adding a relationship.</div>
+              ) : (
+                <div className="forge-relation-form">
+                  <Field label="SOURCE TABLE">
+                    <select value={sourceTable?.id ?? ""} onChange={(event) => { setSourceTableId(event.target.value); setSourceColumnId(""); setTargetTableId(""); setTargetColumnId(""); }}>
+                      {project.tables.map((table) => <option key={table.id} value={table.id}>{table.name}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="SOURCE COLUMN">
+                    <select value={sourceColumn?.id ?? ""} onChange={(event) => setSourceColumnId(event.target.value)}>
+                      {(sourceTable?.columns ?? []).map((column) => <option key={column.id} value={column.id}>{column.name}</option>)}
+                    </select>
+                  </Field>
+                  <div className="forge-relation-arrow"><GitBranch size={17} /></div>
+                  <Field label="REFERENCED TABLE">
+                    <select value={targetTable?.id ?? ""} onChange={(event) => { setTargetTableId(event.target.value); setTargetColumnId(""); }}>
+                      {project.tables.filter((table) => table.id !== sourceTable?.id).map((table) => <option key={table.id} value={table.id}>{table.name}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="REFERENCED COLUMN">
+                    <select value={targetColumn?.id ?? ""} onChange={(event) => setTargetColumnId(event.target.value)}>
+                      {(targetTable?.columns ?? []).map((column) => <option key={column.id} value={column.id}>{column.name}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="ON DELETE">
+                    <select value={onDelete} onChange={(event) => setOnDelete(event.target.value as typeof onDelete)}>
+                      <option value="CASCADE">CASCADE</option>
+                      <option value="RESTRICT">RESTRICT</option>
+                      <option value="SET NULL">SET NULL</option>
+                      <option value="NO ACTION">NO ACTION</option>
+                    </select>
+                  </Field>
+                  <button className="forge-primary forge-relation-submit" onClick={createRelation} disabled={!sourceColumn || !targetColumn}>
+                    <Plus size={14} /> Add relationship
+                  </button>
+                </div>
+              )}
+
+              <div className="forge-relation-list">
+                {project.relations.map((relation) => {
+                  const fromTable = project.tables.find((table) => table.id === relation.sourceTableId);
+                  const toTable = project.tables.find((table) => table.id === relation.targetTableId);
+                  const fromColumn = fromTable?.columns.find((column) => column.id === relation.sourceColumnId);
+                  const toColumn = toTable?.columns.find((column) => column.id === relation.targetColumnId);
+                  return (
+                    <div className="forge-relation-row" key={relation.id}>
+                      <span className="forge-relation-symbol"><GitBranch size={14} /></span>
+                      <div><b>{fromTable?.name}.{fromColumn?.name}</b><small>references</small><b>{toTable?.name}.{toColumn?.name}</b></div>
+                      <span className="forge-relation-rule">{relation.onDelete}</span>
+                      <button className="forge-icon-danger" title="Delete relationship" onClick={() => deleteRelation(project.id, relation.id)}><X size={14} /></button>
+                    </div>
+                  );
+                })}
+                {!project.relations.length && <div className="forge-empty-inline">No relationships yet. Add a foreign key connection above.</div>}
+              </div>
+            </div>
+          )}
+
+          {view === "sql" && (
+            <div className="forge-sql-workspace">
+              <div className="forge-sql-toolbar"><span><Code2 size={14} /> DDL OUTPUT</span><span>{project.dialect.toUpperCase()}</span></div>
+              <pre><code>{sql || "-- Create a table to generate SQL."}</code></pre>
+            </div>
+          )}
+
+          {view === "validation" && (
+            <div className="forge-panel">
+              <div className="forge-check-summary">
+                <div><span>ERRORS</span><strong className={errorCount ? "has-errors" : ""}>{errorCount}</strong></div>
+                <div><span>WARNINGS</span><strong>{warningCount}</strong></div>
+                <div><span>TOTAL FINDINGS</span><strong>{issues.length}</strong></div>
+              </div>
+              {issues.length ? issues.map((issue, index) => (
+                <div className={`forge-issue ${issue.severity}`} key={index}>
+                  <span>{issue.severity === "error" ? "!" : "i"}</span>
+                  <div><b>{issue.severity.toUpperCase()}</b><p>{issue.message}</p></div>
+                </div>
+              )) : (
+                <div className="forge-empty-state">
+                  <span><ShieldCheck size={22} /></span>
+                  <h3>Schema looks good</h3>
+                  <p>No validation findings for the current schema.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {view === "settings" && (
+            <div className="forge-panel forge-settings-panel">
+              <Field label="PROJECT NAME">
+                <input value={project.name} maxLength={80} onChange={(event) => updateProject(project.id, { name: event.target.value })} />
+              </Field>
+              <Field label="DESCRIPTION">
+                <textarea value={project.description} maxLength={240} onChange={(event) => updateProject(project.id, { description: event.target.value })} />
+              </Field>
+              <Field label="SQL DIALECT">
+                <select value={project.dialect} onChange={(event) => updateProject(project.id, { dialect: event.target.value as SqlDialect })}>
+                  <option value="postgresql">PostgreSQL</option>
+                  <option value="mysql">MySQL</option>
+                  <option value="sqlite">SQLite</option>
+                </select>
+              </Field>
+              <div className="forge-settings-note"><HardDrive size={15} /><span><b>Local-first project</b><small>Project data is stored in this browser using local storage.</small></span></div>
+            </div>
+          )}
+        </section>
+
+        <aside className="forge-inspector">
+          <div className="forge-inspector-head"><span>INSPECTOR</span><button title="Project settings" onClick={() => setView("settings")}><Settings2 size={14} /></button></div>
+          {selectedTable ? (
+            <>
+              <div className="forge-inspector-entity"><span><Table2 size={17} /></span><div><b>{selectedTable.name}</b><small>TABLE</small></div></div>
+              <div className="forge-inspector-section">
+                <span className="forge-inspector-label">OVERVIEW</span>
+                <div className="forge-inspector-stat"><span>Columns</span><b>{selectedTable.columns.length}</b></div>
+                <div className="forge-inspector-stat"><span>Primary keys</span><b>{selectedTable.columns.filter((column) => column.primaryKey).length}</b></div>
+                <div className="forge-inspector-stat"><span>Unique columns</span><b>{selectedTable.columns.filter((column) => column.unique).length}</b></div>
+              </div>
+              <div className="forge-inspector-section">
+                <span className="forge-inspector-label">COLUMNS</span>
+                {selectedTable.columns.map((column) => (
+                  <div className="forge-inspector-column" key={column.id}>
+                    <span>{column.primaryKey ? "⌑" : "·"}</span><b>{column.name}</b><small>{column.type}</small>
+                  </div>
+                ))}
+                <button className="forge-inspector-action" onClick={() => { setView("tables"); }}><Table2 size={13} /> Edit table columns</button>
+                <button className="forge-inspector-action" onClick={() => addColumn(project.id, selectedTable.id)}><Plus size={13} /> Add column</button>
+              </div>
+              <div className="forge-inspector-section">
+                <span className="forge-inspector-label">ACTIONS</span>
+                <button className="forge-inspector-action" onClick={() => setView("relationships")}><GitBranch size={13} /> Manage relationships</button>
+              </div>
+            </>
+          ) : (
+            <div className="forge-inspector-empty"><Database size={19} /><p>Select a table on the canvas to inspect its structure.</p></div>
+          )}
+          <div className="forge-inspector-footer"><span><i /> PROJECT STATUS</span><b>{errorCount ? "Needs attention" : "Ready for design"}</b><small>{project.tables.length} tables · {project.relations.length} relationships</small></div>
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return <label className="forge-field"><span>{label}</span>{children}</label>;
 }
 
 function ColumnRow({ column, projectId, tableId, updateColumn, deleteColumn }: {
   column: SqlColumn;
   projectId: string;
   tableId: string;
-  updateColumn: (projectId:string,tableId:string,columnId:string,patch:Partial<SqlColumn>)=>void;
-  deleteColumn: (projectId:string,tableId:string,columnId:string)=>void;
+  updateColumn: (projectId: string, tableId: string, columnId: string, patch: Partial<SqlColumn>) => void;
+  deleteColumn: (projectId: string, tableId: string, columnId: string) => void;
 }) {
-  return <div className="column-row"><input aria-label="Column name" value={column.name} onChange={(event)=>updateColumn(projectId,tableId,column.id,{name:event.target.value})}/><select aria-label="Column type" value={column.type} onChange={(event)=>updateColumn(projectId,tableId,column.id,{type:event.target.value as SqlColumnType})}>{SQL_COLUMN_TYPES.map((type)=><option key={type} value={type}>{type}</option>)}</select><div className="column-rules"><label title="Primary key"><input type="checkbox" checked={column.primaryKey} onChange={(event)=>updateColumn(projectId,tableId,column.id,{primaryKey:event.target.checked,nullable:event.target.checked?false:column.nullable})}/> PK</label><label title="Not null"><input type="checkbox" checked={!column.nullable} onChange={(event)=>updateColumn(projectId,tableId,column.id,{nullable:!event.target.checked})}/> NN</label><label title="Unique"><input type="checkbox" checked={column.unique} onChange={(event)=>updateColumn(projectId,tableId,column.id,{unique:event.target.checked})}/> UQ</label></div><button className="delete-btn" title="Delete column" onClick={()=>deleteColumn(projectId,tableId,column.id)}><Trash2 size={13}/></button>{column.type==="VARCHAR" && <input className="length-input" aria-label="VARCHAR length" type="number" min="1" max="65535" value={column.length??255} onChange={(event)=>updateColumn(projectId,tableId,column.id,{length:Math.max(1,Number(event.target.value)||1)})}/>}</div>;
+  return (
+    <div className="forge-column-row">
+      <input aria-label="Column name" value={column.name} onChange={(event) => updateColumn(projectId, tableId, column.id, { name: event.target.value })} />
+      <select aria-label="Column type" value={column.type} onChange={(event) => updateColumn(projectId, tableId, column.id, { type: event.target.value as SqlColumnType })}>
+        {SQL_COLUMN_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+      </select>
+      <div className="forge-column-rules">
+        <label><input type="checkbox" checked={column.primaryKey} onChange={(event) => updateColumn(projectId, tableId, column.id, { primaryKey: event.target.checked, nullable: event.target.checked ? false : column.nullable })} /> PK</label>
+        <label><input type="checkbox" checked={!column.nullable} onChange={(event) => updateColumn(projectId, tableId, column.id, { nullable: !event.target.checked })} /> NN</label>
+        <label><input type="checkbox" checked={column.unique} onChange={(event) => updateColumn(projectId, tableId, column.id, { unique: event.target.checked })} /> UQ</label>
+      </div>
+      <button className="forge-icon-danger" title="Delete column" onClick={() => deleteColumn(projectId, tableId, column.id)}><Trash2 size={13} /></button>
+      {column.type === "VARCHAR" && (
+        <input className="forge-length" aria-label="VARCHAR length" type="number" min="1" max="65535" value={column.length ?? 255} onChange={(event) => updateColumn(projectId, tableId, column.id, { length: Math.max(1, Number(event.target.value) || 1) })} />
+      )}
+    </div>
+  );
 }
