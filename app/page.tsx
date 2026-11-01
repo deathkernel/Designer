@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
-  ArrowLeft, ArrowRight, ArrowUpRight, Bot, Boxes, CalendarDays, Check, ChevronDown,
+  ArrowLeft, ArrowRight, ArrowUpRight, Bot, Boxes, CalendarDays, Check, ChevronDown, Pencil,
   ChevronRight, CircleHelp, ClipboardList, FolderKanban, Gauge, GitMerge,
   Layers3, ListTodo, Menu, Plus, Search, Send, Settings2,
   ShieldCheck, Sparkles, Target, Workflow, X, PlugZap, Trash2, type LucideIcon
@@ -53,6 +53,8 @@ export default function Home() {
   const [itemInput, setItemInput] = useState("");
   const [itemOutput, setItemOutput] = useState("");
   const [itemFailure, setItemFailure] = useState("");
+  const [itemMetadata, setItemMetadata] = useState<Record<string, string | number | boolean>>({});
+  const [editingItemId, setEditingItemId] = useState("");
   const [aiState, setAiState] = useState<AiState>("checking");
   const [toast, setToast] = useState("");
   const [tab, setTab] = useState("Summary");
@@ -137,21 +139,77 @@ export default function Home() {
       ? { ...project, ...patch, updatedAt: new Date().toISOString() } : project));
   }
 
+  function resetItemDraft() {
+    setItemTitle("");
+    setItemDetail("");
+    setItemSource("");
+    setItemDestination("");
+    setItemTrigger("");
+    setItemTool("");
+    setItemInput("");
+    setItemOutput("");
+    setItemFailure("");
+    setItemMetadata({});
+    setEditingItemId("");
+  }
+
+  function openCreateItem() {
+    resetItemDraft();
+    setShowItemCreate(true);
+  }
+
+  function openEditItem(item: PlanningItem) {
+    setItemTitle(item.title);
+    setItemDetail(item.detail);
+    setItemSource(item.source ?? "");
+    setItemDestination(item.destination ?? "");
+    setItemTrigger(item.trigger ?? "");
+    setItemTool(item.tool ?? "");
+    setItemInput(item.input ?? "");
+    setItemOutput(item.output ?? "");
+    setItemFailure(item.failure ?? "");
+    setItemMetadata(item.metadata ?? {});
+    setEditingItemId(item.id);
+    setShowItemCreate(true);
+  }
+
   function addPlanningItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!activeProject || !itemTitle.trim()) return;
-    const item: PlanningItem = {
-      id: crypto.randomUUID(), moduleId: activeModule, title: itemTitle.trim(),
-      detail: itemDetail.trim(), createdAt: new Date().toISOString(),
-      source: itemSource.trim(), destination: itemDestination.trim(),
-      trigger: itemTrigger.trim(), tool: itemTool.trim(), input: itemInput.trim(),
-      output: itemOutput.trim(), failure: itemFailure.trim()
+
+    const itemData: Omit<PlanningItem, "id" | "createdAt"> = {
+      moduleId: activeModule,
+      title: itemTitle.trim(),
+      detail: itemDetail.trim(),
+      source: itemSource.trim(),
+      destination: itemDestination.trim(),
+      trigger: itemTrigger.trim(),
+      tool: itemTool.trim(),
+      input: itemInput.trim(),
+      output: itemOutput.trim(),
+      failure: itemFailure.trim(),
+      metadata: itemMetadata
     };
-    updateProject({ items: [item, ...activeProject.items] });
+
+    if (editingItemId) {
+      updateProject({
+        items: activeProject.items.map((item) =>
+          item.id === editingItemId ? { ...item, ...itemData } : item
+        )
+      });
+      notify("Planning item updated");
+    } else {
+      const item: PlanningItem = {
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        ...itemData
+      };
+      updateProject({ items: [item, ...activeProject.items] });
+      notify("Planning item added");
+    }
+
     setShowItemCreate(false);
-    setItemTitle(""); setItemDetail(""); setItemSource(""); setItemDestination("");
-    setItemTrigger(""); setItemTool(""); setItemInput(""); setItemOutput(""); setItemFailure("");
-    notify("Planning item added");
+    resetItemDraft();
   }
 
   function removeItem(id: string) {
@@ -240,13 +298,13 @@ export default function Home() {
           ) : activeModule === "portfolio" ? (
             <PortfolioIntelligence projects={projects} onUpdateProject={updateProjectById} onOpenProject={(id) => { setActiveProjectId(id); chooseModule("brief"); }}/>
           ) : (
-            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={() => setShowItemCreate(true)} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")} onGoToRoadmap={() => chooseModule("roadmap")}/>
+            <ModuleWorkspace moduleId={activeModule} project={activeProject} activeTab={tab} onTabChange={setTab} onBack={() => chooseModule("overview")} onCreateItem={openCreateItem} onEditItem={openEditItem} onUpdateProject={updateProject} onRemoveItem={removeItem} onAsk={() => setShowAssistant(true)} onGoToBrief={() => chooseModule("brief")} onGoToRoadmap={() => chooseModule("roadmap")}/>
           )}
         </div>
       </section>
 
       {showCreate && <CreateProjectModal name={projectName} type={projectType} setName={setProjectName} setType={setProjectType} onClose={() => setShowCreate(false)} onSubmit={createProject}/>}
-      {showItemCreate && <CreateItemModal moduleId={activeModule} values={{itemTitle,itemDetail,itemSource,itemDestination,itemTrigger,itemTool,itemInput,itemOutput,itemFailure}} setters={{setItemTitle,setItemDetail,setItemSource,setItemDestination,setItemTrigger,setItemTool,setItemInput,setItemOutput,setItemFailure}} onClose={() => setShowItemCreate(false)} onSubmit={addPlanningItem}/>}
+      {showItemCreate && <CreateItemModal moduleId={activeModule} editing={Boolean(editingItemId)} values={{itemTitle,itemDetail,itemSource,itemDestination,itemTrigger,itemTool,itemInput,itemOutput,itemFailure}} setters={{setItemTitle,setItemDetail,setItemSource,setItemDestination,setItemTrigger,setItemTool,setItemInput,setItemOutput,setItemFailure}} metadata={itemMetadata} setMetadata={setItemMetadata} onClose={() => { setShowItemCreate(false); resetItemDraft(); }} onSubmit={addPlanningItem}/>
       {showSettings && <SettingsModal aiState={aiState} onClose={() => setShowSettings(false)} onRefresh={refreshAi}/>}
       {showAssistant && <AssistantModal project={activeProject} moduleTitle={meta.title} aiState={aiState} messages={chatMessages} input={chatInput} busy={chatBusy} setInput={setChatInput} onClose={() => setShowAssistant(false)} onSubmit={sendToPlanner}/>}
       {toast && <div className="toast"><Check size={15}/>{toast}</div>}
@@ -407,6 +465,7 @@ type ProjectPlanningFormsProps = {
   items: PlanningItem[];
   notes: string;
   onCreateItem: () => void;
+  onEditItem: (item: PlanningItem) => void;
   onNotesChange: (value: string) => void;
   onRemoveItem: (id: string) => void;
   onUpdateProject: (patch: Partial<Project>) => void;
@@ -415,7 +474,7 @@ type ProjectPlanningFormsProps = {
 };
 
 function ProjectPlanningForms({
-  moduleId, project, activeTab, items, notes, onCreateItem, onNotesChange,
+  moduleId, project, activeTab, items, notes, onCreateItem, onEditItem, onNotesChange,
   onRemoveItem, onUpdateProject, onAsk, onApplyWorkstreams
 }: ProjectPlanningFormsProps) {
   const meta = moduleMeta[moduleId];
@@ -443,7 +502,7 @@ function ProjectPlanningForms({
         {items.map((item, index) => <article className="plan-item" key={item.id}>
           <div className="plan-item-number">{String(index + 1).padStart(2, "0")}</div>
           <div className="plan-item-body">
-            <div className="plan-item-top"><strong>{item.title}</strong><span className="item-tag">{meta.shortLabel}</span></div>
+            <div className="plan-item-top"><strong>{item.title}</strong><span className="item-tag">{meta.shortLabel}</span><button type="button" className="plan-item-edit" onClick={() => onEditItem(item)}><Pencil size={12}/> Edit</button></div>
             {item.detail && <p>{item.detail}</p>}
             {(item.source || item.destination || item.trigger || item.tool || item.input || item.output || item.failure) && <div className="item-detail-grid">
               {item.source && <span><b>Source</b>{item.source}</span>}
@@ -454,6 +513,7 @@ function ProjectPlanningForms({
               {item.output && <span><b>Expected output</b>{item.output}</span>}
               {item.failure && <span><b>Failure / fallback</b>{item.failure}</span>}
             </div>}
+            {item.metadata && Object.keys(item.metadata).length > 0 && <div className="plan-item-meta">{Object.entries(item.metadata).map(([key, value]) => <span key={key}><b>{key.replace(/([A-Z])/g, " $1")}</b>{String(value)}</span>)}</div>}
           </div>
           <button className="icon-button remove-item" aria-label={"Remove " + item.title} onClick={() => onRemoveItem(item.id)}><Trash2 size={15}/></button>
         </article>)}
@@ -504,27 +564,137 @@ function CreateProjectModal({ name, type, setName, setType, onClose, onSubmit }:
   </form></div>;
 }
 
-function CreateItemModal({ moduleId, values, setters, onClose, onSubmit }: {
-  moduleId:ModuleId; values:{itemTitle:string;itemDetail:string;itemSource:string;itemDestination:string;itemTrigger:string;itemTool:string;itemInput:string;itemOutput:string;itemFailure:string};
-  setters:{setItemTitle:(v:string)=>void;setItemDetail:(v:string)=>void;setItemSource:(v:string)=>void;setItemDestination:(v:string)=>void;setItemTrigger:(v:string)=>void;setItemTool:(v:string)=>void;setItemInput:(v:string)=>void;setItemOutput:(v:string)=>void;setItemFailure:(v:string)=>void};
-  onClose:()=>void; onSubmit:(event:FormEvent<HTMLFormElement>)=>void;
+type ItemFieldDefinition = {
+  key: string;
+  label: string;
+  kind?: "text" | "number" | "date" | "select";
+  options?: string[];
+  min?: number;
+  max?: number;
+  step?: number;
+};
+
+function projectPlanningFields(moduleId: ModuleId): ItemFieldDefinition[] {
+  switch (moduleId) {
+    case "requirements": return [
+      { key: "category", label: "Requirement type", kind: "select", options: ["Functional", "Non-functional", "Constraint", "Compliance"] },
+      { key: "priority", label: "Priority", kind: "select", options: ["Must have", "Should have", "Could have", "Won't have"] },
+      { key: "status", label: "Status", kind: "select", options: ["Proposed", "Reviewed", "Approved", "Implemented", "Verified"] }
+    ];
+    case "scope": return [
+      { key: "bucket", label: "Scope group", kind: "select", options: ["In scope", "Out of scope", "Assumptions"] }
+    ];
+    case "work-breakdown": return [
+      { key: "phase", label: "Delivery phase", kind: "text" },
+      { key: "level", label: "Work breakdown level", kind: "number", min: 1, max: 5 },
+      { key: "status", label: "Status", kind: "select", options: ["Not started", "In progress", "Blocked", "Done"] }
+    ];
+    case "risks": return [
+      { key: "probability", label: "Probability · 1–5", kind: "number", min: 1, max: 5 },
+      { key: "impact", label: "Impact · 1–5", kind: "number", min: 1, max: 5 },
+      { key: "response", label: "Response strategy", kind: "select", options: ["Mitigate", "Avoid", "Transfer", "Accept"] },
+      { key: "owner", label: "Owner", kind: "text" }
+    ];
+    case "budget": return [
+      { key: "category", label: "Cost category", kind: "text" },
+      { key: "costType", label: "Cost frequency", kind: "select", options: ["One-time", "Monthly", "Annual", "Per use"] },
+      { key: "currency", label: "Currency", kind: "select", options: ["INR", "USD", "EUR", "GBP"] },
+      { key: "amount", label: "Estimated amount", kind: "number", min: 0, step: 0.01 }
+    ];
+    case "decisions": return [
+      { key: "decisionStatus", label: "Decision status", kind: "select", options: ["Open", "Evaluating", "Approved", "Rejected"] },
+      { key: "owner", label: "Decision owner", kind: "text" }
+    ];
+    case "milestones": return [
+      { key: "milestoneDate", label: "Target date", kind: "date" },
+      { key: "gateStatus", label: "Gate status", kind: "select", options: ["Planned", "In review", "Passed", "Blocked"] }
+    ];
+    case "resources": return [
+      { key: "role", label: "Role / resource type", kind: "text" },
+      { key: "allocation", label: "Allocation · %", kind: "number", min: 0, max: 100 },
+      { key: "hours", label: "Hours per week", kind: "number", min: 0, max: 168 }
+    ];
+    case "testing": return [
+      { key: "testType", label: "Test type", kind: "select", options: ["Acceptance", "Functional", "Performance", "Usability", "Regression"] },
+      { key: "checklistStatus", label: "Status", kind: "select", options: ["Not started", "In progress", "Verified"] }
+    ];
+    case "security": return [
+      { key: "controlType", label: "Control type", kind: "select", options: ["Preventive", "Detective", "Corrective", "Recovery"] },
+      { key: "checklistStatus", label: "Status", kind: "select", options: ["Not started", "In progress", "Verified"] }
+    ];
+    case "feasibility": return [
+      { key: "dimension", label: "Assessment dimension", kind: "select", options: ["Technical", "Operational", "Financial", "Schedule", "Regulatory"] },
+      { key: "rating", label: "Feasibility rating · 1–5", kind: "number", min: 1, max: 5 },
+      { key: "confidence", label: "Confidence", kind: "select", options: ["Low", "Medium", "High"] }
+    ];
+    case "tool-selection": return [
+      { key: "vendor", label: "Vendor / provider", kind: "text" },
+      { key: "cost", label: "Estimated cost", kind: "text" },
+      { key: "rating", label: "Fit rating · 1–5", kind: "number", min: 1, max: 5 },
+      { key: "status", label: "Evaluation status", kind: "select", options: ["Candidate", "Shortlisted", "Selected", "Rejected"] }
+    ];
+    default: return [];
+  }
+}
+
+function CreateItemModal({ moduleId, editing, values, setters, metadata, setMetadata, onClose, onSubmit }: {
+  moduleId: ModuleId;
+  editing: boolean;
+  values: { itemTitle: string; itemDetail: string; itemSource: string; itemDestination: string; itemTrigger: string; itemTool: string; itemInput: string; itemOutput: string; itemFailure: string };
+  setters: { setItemTitle: (v: string) => void; setItemDetail: (v: string) => void; setItemSource: (v: string) => void; setItemDestination: (v: string) => void; setItemTrigger: (v: string) => void; setItemTool: (v: string) => void; setItemInput: (v: string) => void; setItemOutput: (v: string) => void; setItemFailure: (v: string) => void };
+  metadata: Record<string, string | number | boolean>;
+  setMetadata: (value: Record<string, string | number | boolean>) => void;
+  onClose: () => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }) {
-  const specialist = ["connections","integrations","api-planner","call-flows","data-flows","tool-selection","architecture","components"].includes(moduleId);
-  return <div className="modal-backdrop" onMouseDown={(event)=>event.target===event.currentTarget&&onClose()}><form className="modal-card item-modal" onSubmit={onSubmit}>
-    <div className="modal-header"><div><div className="eyebrow">{moduleMeta[moduleId].eyebrow}</div><h2>Add planning item</h2><p>Capture a defined piece of work or a design decision.</p></div><button type="button" className="icon-button" aria-label="Close" onClick={onClose}><X size={18}/></button></div>
-    <label className="field-label" htmlFor="item-title">Title</label><input id="item-title" className="text-input" autoFocus required value={values.itemTitle} onChange={(event)=>setters.setItemTitle(event.target.value)} placeholder="Give this item a clear name"/>
-    <label className="field-label" htmlFor="item-detail">Description / rationale</label><textarea id="item-detail" className="text-input text-area" value={values.itemDetail} onChange={(event)=>setters.setItemDetail(event.target.value)} placeholder="What needs to happen, why, and how will success be recognized?"/>
-    {specialist && <><div className="form-divider">CONNECTION & EXECUTION DETAILS <span>Fill in what applies</span></div><div className="form-grid">
-      <label className="field-label">Source<input className="text-input" value={values.itemSource} onChange={(e)=>setters.setItemSource(e.target.value)} placeholder="Person, system, activity"/></label>
-      <label className="field-label">Destination<input className="text-input" value={values.itemDestination} onChange={(e)=>setters.setItemDestination(e.target.value)} placeholder="Recipient or target"/></label>
-      <label className="field-label">Trigger<input className="text-input" value={values.itemTrigger} onChange={(e)=>setters.setItemTrigger(e.target.value)} placeholder="When does it happen?"/></label>
-      <label className="field-label">Tool / method<input className="text-input" value={values.itemTool} onChange={(e)=>setters.setItemTool(e.target.value)} placeholder="Tool, API, process or channel"/></label>
-      <label className="field-label">Input<textarea className="text-input text-area small-area" value={values.itemInput} onChange={(e)=>setters.setItemInput(e.target.value)} placeholder="Data or material sent"/></label>
-      <label className="field-label">Expected output<textarea className="text-input text-area small-area" value={values.itemOutput} onChange={(e)=>setters.setItemOutput(e.target.value)} placeholder="Expected result or response"/></label>
-      <label className="field-label full-field">Failure / fallback<textarea className="text-input text-area small-area" value={values.itemFailure} onChange={(e)=>setters.setItemFailure(e.target.value)} placeholder="What can fail and what happens next?"/></label>
-    </div></>}
-    <div className="modal-actions"><button type="button" className="button button-secondary" onClick={onClose}>Cancel</button><button type="submit" className="button button-primary">Add to plan <ArrowRight size={15}/></button></div>
-  </form></div>;
+  const specialist = ["connections", "integrations", "api-planner", "call-flows", "data-flows", "tool-selection", "architecture", "components"].includes(moduleId);
+  const planningFields = projectPlanningFields(moduleId);
+
+  function updateMetadata(key: string, rawValue: string, kind?: ItemFieldDefinition["kind"]) {
+    const value = kind === "number" ? (rawValue === "" ? "" : Number(rawValue)) : rawValue;
+    setMetadata({ ...metadata, [key]: value });
+  }
+
+  return <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <form className="modal-card item-modal planning-item-modal" onSubmit={onSubmit}>
+      <div className="modal-header">
+        <div><div className="eyebrow">{moduleMeta[moduleId].eyebrow}</div><h2>{editing ? "Edit planning item" : "Add planning item"}</h2><p>{editing ? "Update the details and save your changes." : "Capture a clear piece of project work, a decision or a planning detail."}</p></div>
+        <button type="button" className="icon-button" aria-label="Close" onClick={onClose}><X size={18}/></button>
+      </div>
+
+      <div className="planning-form-section">
+        <div className="planning-form-section-title">BASIC DETAILS</div>
+        <label className="field-label" htmlFor="item-title">Title<input id="item-title" className="text-input" autoFocus required maxLength={140} value={values.itemTitle} onChange={(event) => setters.setItemTitle(event.target.value)} placeholder="Give this item a clear name"/></label>
+        <label className="field-label" htmlFor="item-detail">Description / rationale<textarea id="item-detail" className="text-input text-area" rows={3} value={values.itemDetail} onChange={(event) => setters.setItemDetail(event.target.value)} placeholder="What needs to happen, why, and how will success be recognized?"/></label>
+      </div>
+
+      {planningFields.length > 0 && <div className="planning-form-section">
+        <div className="planning-form-section-title">PLANNING DETAILS</div>
+        <div className="planning-dynamic-fields">
+          {planningFields.map((field) => {
+            const current = metadata[field.key] ?? "";
+            if (field.kind === "select") return <label className="field-label" key={field.key}>{field.label}<select className="text-input" value={String(current)} onChange={(event) => updateMetadata(field.key, event.target.value, field.kind)}><option value="">Choose...</option>{field.options?.map((option) => <option key={option}>{option}</option>)}</select></label>;
+            return <label className="field-label" key={field.key}>{field.label}<input className="text-input" type={field.kind === "number" ? "number" : field.kind === "date" ? "date" : "text"} min={field.min} max={field.max} step={field.step} value={String(current)} onChange={(event) => updateMetadata(field.key, event.target.value, field.kind)} placeholder={field.kind === "text" ? "Enter " + field.label.toLowerCase() : undefined}/></label>;
+          })}
+        </div>
+      </div>}
+
+      {specialist && <div className="planning-form-section">
+        <div className="planning-form-section-title">CONNECTION & EXECUTION DETAILS <span>Fill in what applies</span></div>
+        <div className="form-grid">
+          <label className="field-label">Source<input className="text-input" value={values.itemSource} onChange={(event) => setters.setItemSource(event.target.value)} placeholder="Person, system, activity"/></label>
+          <label className="field-label">Destination<input className="text-input" value={values.itemDestination} onChange={(event) => setters.setItemDestination(event.target.value)} placeholder="Recipient or target"/></label>
+          <label className="field-label">Trigger<input className="text-input" value={values.itemTrigger} onChange={(event) => setters.setItemTrigger(event.target.value)} placeholder="When does it happen?"/></label>
+          <label className="field-label">Tool / method<input className="text-input" value={values.itemTool} onChange={(event) => setters.setItemTool(event.target.value)} placeholder="Tool, API, process or channel"/></label>
+          <label className="field-label">Input<textarea className="text-input text-area small-area" value={values.itemInput} onChange={(event) => setters.setItemInput(event.target.value)} placeholder="Data or material sent"/></label>
+          <label className="field-label">Expected output<textarea className="text-input text-area small-area" value={values.itemOutput} onChange={(event) => setters.setItemOutput(event.target.value)} placeholder="Expected result or response"/></label>
+          <label className="field-label full-field">Failure / fallback<textarea className="text-input text-area small-area" value={values.itemFailure} onChange={(event) => setters.setItemFailure(event.target.value)} placeholder="What can fail and what happens next?"/></label>
+        </div>
+      </div>}
+
+      <div className="modal-actions"><button type="button" className="button button-secondary" onClick={onClose}>Cancel</button><button type="submit" className="button button-primary">{editing ? "Save changes" : "Add to plan"} <ArrowRight size={15}/></button></div>
+    </form>
+  </div>;
 }
 
 function SettingsModal({aiState,onClose,onRefresh}:{aiState:AiState;onClose:()=>void;onRefresh:()=>void}) {
