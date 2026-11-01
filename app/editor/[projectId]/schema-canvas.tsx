@@ -29,25 +29,25 @@ function TableNodeCard({ data, selected }: NodeProps<TableNodeType>) {
     <article className={`diagram-table-node${selected ? " selected" : ""}`}>
       <Handle type="target" position={Position.Left} className="diagram-handle" />
       <header className="diagram-node-head">
-        <span><Table2 size={13} /></span>
+        <span className="diagram-node-icon"><Table2 size={14} /></span>
         <strong>{table.name}</strong>
-        <small>{table.columns.length} COL</small>
+        <small>{table.columns.length} {table.columns.length === 1 ? "COLUMN" : "COLUMNS"}</small>
       </header>
       <div className="diagram-node-columns">
         {table.columns.map((column) => (
           <div className="diagram-node-column" key={column.id}>
             <span className="diagram-column-name">
-              {column.primaryKey && <KeyRound size={10} />}
-              {column.unique && !column.primaryKey && <Link2 size={10} />}
-              {column.name}
+              {column.primaryKey && <KeyRound size={11} />}
+              {column.unique && !column.primaryKey && <Link2 size={11} />}
+              <b>{column.name}</b>
             </span>
             <span className="diagram-column-type">
               {column.type}{column.type === "VARCHAR" ? `(${column.length ?? 255})` : ""}
             </span>
             <span className="diagram-column-rules">
-              {column.primaryKey ? "PK" : ""}
-              {column.unique && !column.primaryKey ? "UQ" : ""}
-              {!column.nullable ? " NN" : ""}
+              {column.primaryKey && <i>PK</i>}
+              {column.unique && !column.primaryKey && <i>UQ</i>}
+              {!column.nullable && <i>NN</i>}
             </span>
           </div>
         ))}
@@ -100,12 +100,12 @@ export default function SchemaCanvas({
       target: relation.targetTableId,
       type: "smoothstep",
       label: sourceColumn && targetColumn ? `${sourceColumn.name} → ${targetColumn.name}` : relation.name,
-      labelStyle: { fill: "#c9c0ff", fontSize: 10 },
-      labelBgStyle: { fill: "#171b24", fillOpacity: 0.96 },
+      labelStyle: { fill: "#50647b", fontSize: 11, fontWeight: 500 },
+      labelBgStyle: { fill: "#ffffff", fillOpacity: 0.98 },
       labelBgPadding: [7, 4] as [number, number],
       labelBgBorderRadius: 4,
-      markerEnd: { type: MarkerType.ArrowClosed, color: "#a99aff" },
-      style: { stroke: "#9d8ee8", strokeWidth: 1.8 }
+      markerEnd: { type: MarkerType.ArrowClosed, color: "#7b91aa" },
+      style: { stroke: "#8298b0", strokeWidth: 1.8 }
     };
   }), [project.relations, project.tables]);
 
@@ -144,13 +144,13 @@ export default function SchemaCanvas({
           defaultEdgeOptions={{ type: "smoothstep" }}
           proOptions={{ hideAttribution: true }}
         >
-          <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="#303744" />
+          <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="#d7e0e9" />
           <Controls />
           <MiniMap
             pannable
             zoomable
-            nodeColor="#7666b8"
-            maskColor="rgba(8, 10, 15, 0.72)"
+            nodeColor="#7893b1"
+            maskColor="rgba(225, 232, 240, 0.72)"
           />
         </ReactFlow>
         {!project.tables.length && (
