@@ -331,7 +331,7 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
           {view === "sql" && (
             <div className="forge-sql-workspace">
               <div className="forge-sql-toolbar"><span><Code2 size={14} /> DDL OUTPUT</span><span>{project.dialect.toUpperCase()}</span></div>
-              <pre><code>{sql || "-- Create a table to generate SQL."}</code></pre>
+              <pre><SqlHighlight value={sql || "-- Create a table to generate SQL."} /></pre>
             </div>
           )}
 
@@ -410,6 +410,46 @@ export default function EditorPage({ params }: { params: Promise<{ projectId: st
         </aside>
       </div>
     </main>
+  );
+}
+
+
+const sqlKeywords = new Set([
+  "CREATE", "TABLE", "IF", "NOT", "EXISTS", "ALTER", "DROP", "ADD",
+  "INSERT", "INTO", "VALUES", "SELECT", "FROM", "WHERE", "UPDATE",
+  "DELETE", "JOIN", "ON", "AS", "AND", "OR", "ORDER", "BY", "GROUP",
+  "REFERENCES", "FOREIGN", "CONSTRAINT", "DEFAULT"
+]);
+const sqlTypes = new Set([
+  "INT", "INTEGER", "BIGINT", "SMALLINT", "VARCHAR", "TEXT", "BOOLEAN",
+  "DATE", "TIMESTAMP", "DECIMAL", "FLOAT", "UUID", "JSON", "NUMERIC"
+]);
+const sqlConstraints = new Set([
+  "PRIMARY", "KEY", "UNIQUE", "NOT", "NULL", "AUTO_INCREMENT",
+  "AUTOINCREMENT", "CASCADE", "RESTRICT", "ACTION", "SET", "TRUE", "FALSE"
+]);
+
+function SqlHighlight({ value }: { value: string }) {
+  const parts = value.split(/(--[^\\n]*|'(?:''|[^'])*'|"(?:""|[^"])*"|\\b\\d+(?:\\.\\d+)?\\b|\\b[A-Za-z_][A-Za-z0-9_]*\\b)/g);
+
+  return (
+    <code>
+      {parts.map((part, index) => {
+        const upper = part.toUpperCase();
+        let className = "";
+
+        if (part.startsWith("--")) className = "sql-token-comment";
+        else if (part.startsWith("'") || part.startsWith('"')) className = "sql-token-string";
+        else if (/^\\d/.test(part)) className = "sql-token-number";
+        else if (sqlTypes.has(upper)) className = "sql-token-type";
+        else if (sqlConstraints.has(upper)) className = "sql-token-constraint";
+        else if (sqlKeywords.has(upper)) className = "sql-token-keyword";
+
+        return className
+          ? <span className={className} key={index}>{part}</span>
+          : part;
+      })}
+    </code>
   );
 }
 
