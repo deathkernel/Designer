@@ -361,8 +361,8 @@ function StatusPill({ status }: { status: ProjectStatus }) {
 
 const architectureModules: ModuleId[] = ["architecture", "components", "connections", "data-flows", "integrations", "api-planner", "call-flows", "tool-selection"];
 
-function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onCreateItem, onUpdateProject, onRemoveItem, onAsk, onGoToBrief, onGoToRoadmap }: {
-  moduleId: ModuleId; project?: Project; activeTab: string; onTabChange: (tab: string) => void; onBack: () => void; onCreateItem: () => void;
+function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, onCreateItem, onEditItem, onUpdateProject, onRemoveItem, onAsk, onGoToBrief, onGoToRoadmap }: {
+  moduleId: ModuleId; project?: Project; activeTab: string; onTabChange: (tab: string) => void; onBack: () => void; onCreateItem: () => void; onEditItem: (item: PlanningItem) => void;
   onUpdateProject: (patch: Partial<Project>) => void; onRemoveItem: (id: string) => void;
   onAsk: () => void; onGoToBrief: () => void; onGoToRoadmap: () => void;
 }) {
