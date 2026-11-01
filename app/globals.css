@@ -196,3 +196,186 @@ footer{margin-top:25px;padding-top:13px}
  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
  .stats>div{padding:9px}
 }
+
+
+/* ProjectForge workspace architecture */
+.forge-workspace{height:100vh;min-height:640px;display:flex;flex-direction:column;overflow:hidden;background:#0b0e13;color:#e8ebf1}
+.forge-topbar{height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 17px;border-bottom:1px solid #242b36;background:#10141b}
+.forge-topbar-left,.forge-topbar-right{display:flex;align-items:center;gap:11px;min-width:0}
+.forge-back{width:28px;height:28px;display:grid;place-items:center;border:1px solid #2b3441;border-radius:6px;background:#151b24;color:#aeb7c4}
+.forge-back:hover,.forge-settings-button:hover{background:#202735;color:#fff}
+.forge-brand-mark{width:25px;height:25px;display:grid;place-items:center;border-radius:6px;background:#29243b;color:#c4baff}
+.forge-brand-name{font:700 12px Manrope;letter-spacing:-.3px;color:#f0eff7}
+.forge-top-divider{height:20px;width:1px;background:#303744;margin:0 3px}
+.forge-project-name{width:170px;min-width:0;border:0;outline:0;background:transparent;color:#e9ebf1;font-size:11px;font-weight:600}
+.forge-dialect{padding:4px 7px;border:1px solid #343b48;border-radius:5px;color:#b9adf4;font:8px "DM Mono";text-transform:uppercase}
+.forge-saved{display:flex;align-items:center;gap:5px;color:#8ab99c;font-size:9px}
+.forge-settings-button{height:29px;display:flex;align-items:center;gap:6px;padding:0 9px;border:1px solid #303947;border-radius:6px;background:#151b24;color:#aeb7c4;font-size:9px}
+.forge-layout{flex:1;min-height:0;display:grid;grid-template-columns:205px minmax(0,1fr) 258px}
+.forge-nav{min-height:0;display:flex;flex-direction:column;padding:13px 10px 10px;border-right:1px solid #242b36;background:#10141b}
+.forge-nav-project{height:49px;display:flex;align-items:center;gap:9px;padding:0 8px;margin-bottom:17px;border:1px solid #2a323e;border-radius:7px;background:#151b24}
+.forge-project-avatar{width:27px;height:27px;flex:none;display:grid;place-items:center;border-radius:6px;background:#322b49;color:#d3c9ff;font:600 11px Manrope}
+.forge-project-meta{flex:1;min-width:0;display:grid;gap:3px}
+.forge-project-meta strong{overflow:hidden;color:#e7e9ef;font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.forge-project-meta span{color:#7e8999;font:7px "DM Mono";letter-spacing:.7px}
+.forge-nav-project>svg{color:#778292}
+.forge-nav-section{display:grid;gap:3px;margin-bottom:19px}
+.forge-nav-label{padding:0 9px 7px;color:#697585;font:8px "DM Mono";letter-spacing:1.1px}
+.forge-nav-item{width:100%;height:34px;display:flex;align-items:center;gap:9px;padding:0 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:#9aa5b4;text-align:left;font-size:10px;transition:background .14s,border-color .14s,color .14s}
+.forge-nav-item:hover{background:#171e28;color:#e5e8ef}
+.forge-nav-item.active{border-color:#39334f;background:#252139;color:#ded7ff}
+.forge-nav-item.active svg{color:#c0b3ff}
+.forge-nav-item span{flex:1}
+.forge-nav-item small{color:#7f8a9a;font:8px "DM Mono"}
+.forge-nav-item i{min-width:16px;padding:2px 4px;border-radius:4px;background:#47282d;color:#ffb0b4;text-align:center;font:8px "DM Mono";font-style:normal}
+.forge-nav-bottom{margin-top:auto;padding-top:10px;border-top:1px solid #252d38}
+.forge-local-status{display:flex;align-items:center;gap:8px;margin-top:13px;padding:10px 8px;border:1px solid #29352f;border-radius:7px;background:#151e1b;color:#8bbd9e}
+.forge-local-status>span{flex:1;display:grid;gap:3px}
+.forge-local-status b{color:#b7d8c3;font-size:9px;font-weight:600}
+.forge-local-status small{color:#7f9688;font-size:8px}
+.forge-local-status>i{width:6px;height:6px;border-radius:50%;background:#83d2a0;box-shadow:0 0 8px #83d2a066}
+.forge-main{min-width:0;min-height:0;display:flex;flex-direction:column;padding:23px 24px 17px;overflow:auto;background:#0c1016}
+.forge-page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;flex:none;margin-bottom:19px}
+.forge-eyebrow{color:#9c91d0;font:8px "DM Mono";letter-spacing:1.05px}
+.forge-page-heading h1{margin:6px 0 4px;color:#f0f1f5;font:700 22px/1.2 Manrope;letter-spacing:-.7px}
+.forge-page-heading p{margin:0;color:#8792a1;font-size:10px;line-height:1.5}
+.forge-primary,.forge-secondary{height:32px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 11px;border:1px solid #b4a8f3;border-radius:6px;background:#b4a8f3;color:#171522;font-size:9px;font-weight:700;white-space:nowrap}
+.forge-primary:hover{background:#c6bcff;border-color:#c6bcff}
+.forge-primary:disabled{opacity:.45;cursor:not-allowed}
+.forge-secondary{border-color:#35404e;background:#171e28;color:#c6ccd6;font-weight:500}
+.forge-secondary:hover{background:#202938}
+.forge-heading-actions{display:flex;gap:7px}
+.forge-canvas-frame{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid #2b3440;border-radius:8px;background:#0d1219}
+.forge-canvas-frame .schema-canvas{flex:1;min-height:0;display:flex;flex-direction:column;margin:0;border:0;border-radius:0;box-shadow:none}
+.forge-canvas-frame .canvas-caption{height:38px;min-height:38px;flex:none;background:#121923;border-bottom:1px solid #293340}
+.forge-canvas-frame .schema-flow{height:auto;min-height:0;max-height:none;flex:1;background-color:#0d1219;background-image:radial-gradient(#303a48 .75px,transparent .75px);background-size:22px 22px}
+.forge-canvas-frame .schema-flow .react-flow__background{opacity:.4}
+.forge-canvas-frame .canvas-first-node{background:#171e28;border-color:#374354}
+.forge-canvas-footer{height:29px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 11px;border-top:1px solid #252f3b;background:#111720;color:#778493;font:8px "DM Mono"}
+.forge-canvas-footer>span:first-child{display:flex;align-items:center;gap:6px;color:#aab4c1;letter-spacing:.6px}
+.forge-canvas-footer i{width:5px;height:5px;border-radius:50%;background:#83c99d}
+.forge-canvas-footer b{padding:0 3px;color:#586475}
+.forge-inspector{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:auto;border-left:1px solid #242b36;background:#10141b}
+.forge-inspector-head{height:43px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid #252d38;color:#7f8a99;font:8px "DM Mono";letter-spacing:1px}
+.forge-inspector-head button{width:25px;height:25px;display:grid;place-items:center;border:0;border-radius:5px;background:transparent;color:#8d98a7}
+.forge-inspector-head button:hover{background:#202734;color:#e4e7ed}
+.forge-inspector-entity{display:flex;align-items:center;gap:10px;padding:16px 13px;border-bottom:1px solid #252d38}
+.forge-inspector-entity>span{width:32px;height:32px;display:grid;place-items:center;border:1px solid #484064;border-radius:7px;background:#29243a;color:#c9beff}
+.forge-inspector-entity>div{display:grid;gap:4px;min-width:0}
+.forge-inspector-entity b{overflow:hidden;color:#e7e9ef;font-size:10px;text-overflow:ellipsis}
+.forge-inspector-entity small{color:#818d9c;font:7px "DM Mono";letter-spacing:.8px}
+.forge-inspector-section{padding:14px 13px;border-bottom:1px solid #252d38}
+.forge-inspector-label{display:block;margin-bottom:10px;color:#7e8998;font:8px "DM Mono";letter-spacing:.9px}
+.forge-inspector-stat{display:flex;justify-content:space-between;padding:5px 0;color:#929dac;font-size:9px}
+.forge-inspector-stat b{color:#dce0e8;font:9px "DM Mono"}
+.forge-inspector-column{height:29px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #202833;color:#9fabc0}
+.forge-inspector-column>span{width:12px;color:#b6a9f3;text-align:center}
+.forge-inspector-column b{flex:1;overflow:hidden;color:#cdd3dd;font:9px "DM Mono";text-overflow:ellipsis}
+.forge-inspector-column small{color:#7d8999;font:8px "DM Mono"}
+.forge-inspector-action{width:100%;height:29px;display:flex;align-items:center;gap:7px;margin-top:5px;padding:0 7px;border:1px solid transparent;border-radius:5px;background:transparent;color:#a9b2c0;text-align:left;font-size:9px}
+.forge-inspector-action:hover{border-color:#303b4b;background:#171f2a;color:#e3ddff}
+.forge-inspector-empty{display:grid;justify-items:center;gap:9px;padding:35px 18px;color:#7f8b9a;text-align:center}
+.forge-inspector-empty p{max-width:180px;margin:0;font-size:9px;line-height:1.6}
+.forge-inspector-footer{display:grid;gap:7px;margin-top:auto;padding:13px;border-top:1px solid #252d38}
+.forge-inspector-footer span{display:flex;align-items:center;gap:6px;color:#84909f;font:7px "DM Mono";letter-spacing:.7px}
+.forge-inspector-footer i{width:5px;height:5px;border-radius:50%;background:#83c99d}
+.forge-inspector-footer b{color:#d2d8e1;font-size:9px;font-weight:600}
+.forge-inspector-footer small{color:#7d8998;font-size:8px}
+.forge-tables-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,390px),1fr));align-content:start;gap:12px}
+.forge-table-editor{overflow:hidden;border:1px solid #2b3440;border-radius:8px;background:#111720}
+.forge-table-editor>header{height:43px;display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid #2b3440;background:#171f2a}
+.forge-table-icon{width:24px;height:24px;display:grid;place-items:center;border-radius:5px;background:#302b45;color:#c8bdff}
+.forge-table-editor>header input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#e6e9ef;font-size:10px;font-weight:600}
+.forge-table-editor>header>span:nth-last-child(2){color:#758293;font:7px "DM Mono"}
+.forge-column-header,.forge-column-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(85px,.9fr) minmax(98px,1.1fr) 22px;align-items:center;gap:7px;padding:8px 10px}
+.forge-column-header{border-bottom:1px solid #252e39;color:#788595;font:7px "DM Mono";letter-spacing:.6px}
+.forge-column-row{min-height:38px;border-bottom:1px solid #222b36}
+.forge-column-row>input:first-child,.forge-column-row select{width:100%;min-width:0;height:27px;padding:0 6px;border:1px solid #303a48;border-radius:5px;outline:0;background:#0d131b;color:#d5dbe5;font-size:9px}
+.forge-column-row>input:focus,.forge-column-row select:focus{border-color:#8f82cf}
+.forge-column-rules{display:flex;align-items:center;gap:5px}
+.forge-column-rules label{display:flex;align-items:center;gap:2px;color:#9ba6b5;font:7px "DM Mono"}
+.forge-column-rules input{width:10px;height:10px;margin:0;accent-color:#aa9bff}
+.forge-length{grid-column:2/3;width:65px;height:22px;padding:0 5px;border:1px solid #303a48;border-radius:4px;background:#0d131b;color:#b8c0cc;font:8px "DM Mono"}
+.forge-icon-danger{width:24px;height:24px;display:grid;place-items:center;border:0;border-radius:5px;background:transparent;color:#7e8998}
+.forge-icon-danger:hover{background:#39252a;color:#f29ba1}
+.forge-add-column{width:100%;height:34px;display:flex;align-items:center;gap:6px;padding:0 11px;border:0;background:transparent;color:#b9adf4;text-align:left;font-size:9px}
+.forge-add-column:hover{background:#191f2a}
+.forge-panel{display:grid;gap:13px;align-content:start;padding:16px;border:1px solid #2b3440;border-radius:8px;background:#111720}
+.forge-panel-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.forge-panel-title h2{margin:0 0 4px;color:#e8eaf0;font:600 13px Manrope}
+.forge-panel-title p{margin:0;color:#8793a2;font-size:9px}
+.forge-panel-title>span{color:#8591a0;font:8px "DM Mono"}
+.forge-relation-form{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:13px;border:1px solid #2b3542;border-radius:7px;background:#0d131b}
+.forge-field{display:grid;gap:6px;min-width:0}
+.forge-field>span{color:#8591a0;font:7px "DM Mono";letter-spacing:.8px}
+.forge-field input,.forge-field select,.forge-field textarea{width:100%;min-width:0;min-height:32px;padding:7px 9px;border:1px solid #303b49;border-radius:5px;outline:0;background:#151c26;color:#dce1e9;font-size:9px}
+.forge-field textarea{min-height:85px;resize:vertical}
+.forge-field input:focus,.forge-field select:focus,.forge-field textarea:focus{border-color:#9285d5}
+.forge-relation-arrow{display:none}
+.forge-relation-submit{grid-column:1/-1;justify-self:start}
+.forge-relation-list{display:grid;gap:7px}
+.forge-relation-row{min-height:49px;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #2a3440;border-radius:6px;background:#151c25}
+.forge-relation-symbol{width:26px;height:26px;display:grid;place-items:center;border-radius:5px;background:#29243a;color:#c4b8ff}
+.forge-relation-row>div{flex:1;min-width:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.forge-relation-row>div b{color:#dce1e9;font:9px "DM Mono"}
+.forge-relation-row>div small{color:#778494;font-size:8px}
+.forge-relation-rule{color:#a99ee0;font:7px "DM Mono"}
+.forge-empty-inline{padding:19px;border:1px dashed #374251;border-radius:7px;color:#8995a4;text-align:center;font-size:9px}
+.forge-sql-workspace{min-height:300px;overflow:hidden;border:1px solid #2c3542;border-radius:8px;background:#0e141c}
+.forge-sql-toolbar{height:37px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #2a3440;background:#151c26;color:#8592a2;font:8px "DM Mono"}
+.forge-sql-toolbar span:first-child{display:flex;align-items:center;gap:7px;color:#b7c0ce}
+.forge-sql-workspace pre{min-height:260px;max-height:calc(100vh - 260px);overflow:auto;margin:0;padding:17px;color:#c7bdf7;font:10px/1.85 "DM Mono";white-space:pre}
+.forge-check-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.forge-check-summary>div{display:grid;gap:8px;padding:11px;border:1px solid #2a3440;border-radius:6px;background:#151c25}
+.forge-check-summary span{color:#8290a0;font:7px "DM Mono"}
+.forge-check-summary strong{color:#a5d6b4;font:600 19px Manrope}
+.forge-check-summary strong.has-errors{color:#f09ba1}
+.forge-issue{display:flex;align-items:flex-start;gap:10px;padding:11px;border:1px solid #2b3440;border-radius:6px;background:#151c25}
+.forge-issue>span{width:18px;height:18px;flex:none;display:grid;place-items:center;border-radius:50%;background:#293c32;color:#a5d9b7;font:9px "DM Mono"}
+.forge-issue.error>span{background:#452a30;color:#ffb0b4}
+.forge-issue>div{display:grid;gap:4px}
+.forge-issue b{color:#c6d1dc;font:7px "DM Mono"}
+.forge-issue p{margin:0;color:#9aa5b3;font-size:9px;line-height:1.5}
+.forge-settings-panel{max-width:620px}
+.forge-settings-note{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #2a3a32;border-radius:6px;background:#142019;color:#94c9a7}
+.forge-settings-note span{display:grid;gap:4px}
+.forge-settings-note b{color:#c2e0cc;font-size:9px}
+.forge-settings-note small{color:#89a394;font-size:8px}
+.forge-empty-state{min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;border:1px dashed #35404e;border-radius:8px;background:#111720;text-align:center}
+.forge-empty-state>span{width:42px;height:42px;display:grid;place-items:center;border:1px solid #4b4369;border-radius:10px;background:#29243b;color:#c7bcff}
+.forge-empty-state h3{margin:2px 0 0;color:#e7e9ef;font:600 13px Manrope}
+.forge-empty-state p{margin:0;color:#8793a2;font-size:9px}
+.forge-empty-state .forge-primary{margin-top:4px}
+@media(max-width:1150px){
+ .forge-layout{grid-template-columns:190px minmax(0,1fr) 225px}
+ .forge-main{padding:19px 17px 14px}
+ .forge-inspector{font-size:9px}
+}
+@media(max-width:900px){
+ .forge-layout{grid-template-columns:180px minmax(0,1fr)}
+ .forge-inspector{display:none}
+ .forge-main{padding:18px 15px}
+}
+@media(max-width:620px){
+ .forge-workspace{height:auto;min-height:100vh;overflow:visible}
+ .forge-topbar{padding:0 10px}
+ .forge-brand-name,.forge-top-divider,.forge-dialect,.forge-saved{display:none}
+ .forge-project-name{width:125px}
+ .forge-layout{grid-template-columns:1fr;min-height:calc(100vh - 54px)}
+ .forge-nav{display:flex;flex-direction:row;gap:4px;overflow-x:auto;padding:7px;border-right:0;border-bottom:1px solid #242b36}
+ .forge-nav-project,.forge-nav-label,.forge-nav-bottom{display:none}
+ .forge-nav-section{display:flex;gap:4px;flex:none;margin:0}
+ .forge-nav-item{width:auto;height:31px;padding:0 9px;white-space:nowrap}
+ .forge-nav-item small,.forge-nav-item i{display:none}
+ .forge-main{min-height:calc(100vh - 100px);padding:17px 11px}
+ .forge-page-heading{align-items:flex-start;flex-direction:column;margin-bottom:13px}
+ .forge-page-heading h1{font-size:19px}
+ .forge-canvas-frame{min-height:560px}
+ .forge-canvas-frame .schema-flow{min-height:500px}
+ .forge-relation-form{grid-template-columns:1fr}
+ .forge-relation-submit{grid-column:auto}
+ .forge-check-summary{gap:5px}
+ .forge-check-summary>div{padding:8px}
+ .forge-column-header,.forge-column-row{grid-template-columns:minmax(65px,1fr) minmax(70px,.9fr) minmax(72px,1fr) 20px;gap:4px;padding-left:6px;padding-right:6px}
+ .forge-column-rules{gap:3px}
+}
