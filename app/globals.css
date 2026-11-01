@@ -379,3 +379,160 @@ footer{margin-top:25px;padding-top:13px}
  .forge-column-header,.forge-column-row{grid-template-columns:minmax(65px,1fr) minmax(70px,.9fr) minmax(72px,1fr) 20px;gap:4px;padding-left:6px;padding-right:6px}
  .forge-column-rules{gap:3px}
 }
+
+
+/* ProjectForge color refinement — restrained graphite and blue */
+:root{
+  color-scheme:dark;
+  --bg:#11151b;
+  --panel:#181e26;
+  --panel2:#202833;
+  --line:#303a47;
+  --text:#edf1f5;
+  --muted:#a0aab7;
+  --soft:#7b8796;
+  --accent:#83a9e8;
+  --green:#75c49a;
+  --red:#e58c91;
+}
+body{background:#11151b;color:#edf1f5}
+.sidebar{background:#151a21;border-right-color:#2a3440}
+.brand-symbol{background:#d9e5f7;color:#263b59;box-shadow:none}
+.workspace{background:#1b222c;border-color:#303a47}
+.workspace-mark,.profile-mark,.user-mark{background:#29384b;color:#c5d8f2}
+.nav{color:#aab4c1}
+.nav:hover{background:#202a36;color:#f0f3f7}
+.nav.active{background:#26364a;color:#dce9fa}
+.nav.active svg{color:#a9c7f2}
+.nav-count{color:#8d9aaa}
+.local-card{border-color:#34433c;background:#1b2923;color:#8ec9a7}
+.local-card small{color:#94a99d}
+.topbar{background:#151a21;border-bottom-color:#2a3440}
+.crumb b{color:#e7ecf2}
+.saved-indicator{color:#91c6a6}
+.user-mark{border-radius:7px}
+.content{color:#edf1f5}
+.eyebrow{color:#91b3e8}
+.heading-row h1 em{color:#9bb9ed}
+.primary{background:#a9c4eb;border-color:#a9c4eb;color:#172335}
+.primary:hover{background:#bdd2f0;border-color:#bdd2f0}
+.secondary{background:#202a36;border-color:#394656;color:#d9e1eb}
+.secondary:hover{background:#293646}
+.hero{border-color:#35404d;background:linear-gradient(112deg,#1b232d,#1b222b 72%,#202a37)}
+.hero-label{border-color:#526b8c;background:#27374a;color:#c6d9f2}
+.hero-copy h2 i{color:#a9c5ed}
+.hero-copy>p{color:#b2bdca}
+.hero-cta{background:#b3cbed;color:#172335}
+.hero-cta:hover{background:#c7d9f1}
+.hero-note{color:#9caaba}
+.hero-note span,.saved-indicator i{background:#79c59a;box-shadow:none}
+.schema-glow{background:#7da7e90b}
+.schema-card{border-color:#45566a;background:#202a36;box-shadow:0 9px 24px #080d1460}
+.schema-card-head{border-bottom-color:#39495b;color:#d2e0f2}
+.schema-card>span{color:#c3ccd7}
+.schema-card small{color:#8f9daf}
+.schema-center{border-color:#b4cbed;background:#a9c4eb;color:#1b2a3d;box-shadow:none}
+.schema-line{background:linear-gradient(90deg,#a9c4eb99,#a9c4eb10)}
+.art-caption{color:#9aaabd}
+.stats>div{border-color:#303a47;background:#1a212a}
+.stats span{color:#9aa7b6}
+.stats b{color:#edf1f5}
+.stats small{color:#8d9aaa}
+.stats .mode-value{color:#a9c5ed}
+.search{border-color:#35404d;background:#1a222c;color:#9eacbd}
+.search input{color:#edf1f5}
+.search input::placeholder{color:#8996a5}
+.project-list{border-color:#303a47}
+.project-row{background:#1a212a;color:#aab5c2;border-bottom-color:#2b3541}
+.project-row:hover{background:#222d39}
+.project-name b{color:#edf1f5}
+.project-name small{color:#9aa7b5}
+.project-icon{border-color:#435873;background:#253447;color:#b7d0f2}
+.project-dialect{border-color:#3b4b5e;color:#b9cde8;background:#202c3a}
+.empty{border-color:#3a4654;background:#191f28}
+.empty-symbol{border-color:#526a87;background:#26364a;color:#b8d0ef}
+footer{border-top-color:#2b3541;color:#8b98a8}
+footer i{color:#a9c5ed}
+
+/* Keep the editor on the same restrained visual system */
+.forge-workspace{background:#11151b;color:#edf1f5}
+.forge-topbar,.forge-nav,.forge-inspector{background:#171d25;border-color:#2c3744}
+.forge-layout{background:#11151b}
+.forge-back,.forge-settings-button{border-color:#394554;background:#202a36;color:#bdc8d5}
+.forge-back:hover,.forge-settings-button:hover{background:#293646;color:#fff}
+.forge-brand-mark{background:#29384b;color:#c5d8f2}
+.forge-project-avatar{background:#29384b;color:#c5d8f2}
+.forge-project-meta strong,.forge-inspector-entity b{color:#edf1f5}
+.forge-project-meta span,.forge-nav-label,.forge-inspector-label{color:#8997a7}
+.forge-nav-item{color:#aab5c2}
+.forge-nav-item:hover{background:#202a36;color:#f0f3f7}
+.forge-nav-item.active{border-color:#3d526c;background:#26364a;color:#dce9fa}
+.forge-nav-item.active svg{color:#a9c5ed}
+.forge-eyebrow{color:#91b3e8}
+.forge-page-heading h1{color:#edf1f5}
+.forge-page-heading p{color:#a0adbb}
+.forge-primary{border-color:#a9c4eb;background:#a9c4eb;color:#172335}
+.forge-primary:hover{border-color:#bdd2f0;background:#bdd2f0}
+.forge-secondary{border-color:#394656;background:#202a36;color:#d9e1eb}
+.forge-canvas-frame,.forge-sql-workspace{border-color:#303b48;background:#151c25}
+.forge-canvas-frame .canvas-caption,.forge-sql-toolbar{border-color:#303b48;background:#1b242f;color:#9ba9b9}
+.forge-canvas-frame .schema-flow{background-color:#151c25;background-image:radial-gradient(#3b4654 .7px,transparent .7px)}
+.forge-canvas-frame .canvas-first-node{border-color:#40516a;background:#202b38}
+.forge-canvas-footer{border-color:#303b48;background:#1b242f;color:#94a2b1}
+.forge-canvas-footer>span:first-child{color:#b8c5d4}
+.forge-inspector-head{border-color:#303b48;color:#95a3b2}
+.forge-inspector-entity,.forge-inspector-section,.forge-inspector-footer{border-color:#303b48}
+.forge-inspector-entity>span,.forge-table-icon,.forge-relation-symbol{border-color:#435873;background:#253447;color:#b7d0f2}
+.forge-inspector-stat{color:#a6b1bf}
+.forge-inspector-stat b,.forge-inspector-column b{color:#dce4ed}
+.forge-inspector-column>span{color:#a9c5ed}
+.forge-inspector-column small{color:#91a0b0}
+.forge-inspector-action{color:#b4c0ce}
+.forge-inspector-action:hover{border-color:#3c4c60;background:#202b38;color:#dce9fa}
+.forge-inspector-footer span,.forge-inspector-footer small{color:#91a0af}
+.forge-inspector-footer b{color:#dce4ed}
+.forge-tables-view .forge-table-editor,.forge-panel,.forge-settings-panel{border-color:#303b48;background:#1a222c}
+.forge-table-editor>header{border-color:#303b48;background:#202a36}
+.forge-table-editor>header input{color:#edf1f5}
+.forge-column-header{border-color:#303b48;color:#91a0af}
+.forge-column-row{border-color:#2a3541}
+.forge-column-row>input:first-child,.forge-column-row select,.forge-field input,.forge-field select,.forge-field textarea{border-color:#3a4654;background:#151c25;color:#e0e7ef}
+.forge-column-row>input:focus,.forge-column-row select:focus,.forge-field input:focus,.forge-field select:focus,.forge-field textarea:focus{border-color:#83a9e8}
+.forge-column-rules label{color:#aab6c4}
+.forge-column-rules input{accent-color:#83a9e8}
+.forge-add-column,.forge-inspector-action svg{color:#a9c5ed}
+.forge-add-column:hover{background:#202b38}
+.forge-icon-danger{color:#9aa7b5}
+.forge-icon-danger:hover{background:#3a292d;color:#f0a0a5}
+.forge-panel-title h2{color:#edf1f5}
+.forge-panel-title p,.forge-panel-title>span{color:#9aa8b7}
+.forge-relation-form{border-color:#303b48;background:#151c25}
+.forge-field>span{color:#95a3b2}
+.forge-relation-row{border-color:#303b48;background:#202a36}
+.forge-relation-row>div b{color:#e0e7ef}
+.forge-relation-row>div small{color:#95a3b2}
+.forge-relation-rule{color:#b5cbe7}
+.forge-empty-inline{border-color:#455363;color:#a1adba}
+.forge-sql-toolbar{color:#9aa8b7}
+.forge-sql-toolbar span:first-child{color:#c0cbd8}
+.forge-sql-workspace pre{color:#c4d6ee}
+.forge-check-summary>div,.forge-issue{border-color:#303b48;background:#202a36}
+.forge-check-summary span,.forge-issue p{color:#a1adba}
+.forge-check-summary strong{color:#8fc8a6}
+.forge-check-summary strong.has-errors{color:#e99a9f}
+.forge-issue>span{background:#293d33;color:#a0d4b1}
+.forge-issue.error>span{background:#452d31;color:#f0adb0}
+.forge-issue b{color:#d1dbe5}
+.forge-settings-note{border-color:#35483d;background:#1b2923;color:#91c9a7}
+.forge-settings-note b{color:#c6e1d0}
+.forge-settings-note small{color:#9ab2a3}
+.forge-empty-state{border-color:#3a4654;background:#1a222c}
+.forge-empty-state>span{border-color:#435873;background:#253447;color:#b7d0f2}
+.forge-empty-state h3{color:#edf1f5}
+.forge-empty-state p{color:#a0adbb}
+.forge-local-status{border-color:#35483d;background:#1b2923;color:#91c9a7}
+.forge-local-status b{color:#c6e1d0}
+.forge-local-status small{color:#9ab2a3}
+@media(prefers-reduced-motion:no-preference){
+ .nav,.nav.active,.project-row,.forge-nav-item,.forge-primary,.primary{transition:background-color .16s ease,border-color .16s ease,color .16s ease}
+}
