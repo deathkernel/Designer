@@ -13,7 +13,6 @@ import { AiProjectIntake } from "@/components/ai-project-intake";
 import { AiRoadmapPlanner } from "@/components/ai-roadmap-planner";
 import { ProjectBackup } from "@/components/project-backup";
 import { PortfolioIntelligence } from "@/components/portfolio-intelligence";
-import { PlanningStudio } from "@/components/planning-studio";
 import { ProjectDesignStudio } from "@/components/project-design-studio";
 import { ArchitectureDesigner } from "@/components/architecture-designer";
 import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectDesignCanvas, ProjectIntake, ProjectRoadmap, ProjectStatus } from "@/lib/types";
@@ -406,24 +405,7 @@ function ModuleWorkspace({ moduleId, project, projects, activeProjectId, onSelec
     <div className="module-heading-row"><div className="module-title-wrap"><div className="module-icon"><Icon size={21}/></div><div><div className="eyebrow">{meta.eyebrow}</div><h1>{meta.title}</h1><p className="page-intro">{meta.description}</p></div></div><button className="button button-secondary" onClick={onAsk}><Sparkles size={15}/> Ask Qwen</button></div>
     <div className="context-strip"><span className="context-project"><FolderKanban size={14}/>{project?.name ?? "No active project"}</span><span className="context-separator"/>{project ? <label className="context-status-control"><span>PROJECT STATUS</span><select value={project.status} onChange={(event) => onUpdateProject({ status: event.target.value as ProjectStatus })}><option>Planning</option><option>In progress</option><option>On hold</option><option>Completed</option></select></label> : <span className="context-draft">Create a project first</span>}<span className="context-separator"/><span className="context-muted">Changes save in this browser</span></div>
     {moduleId !== "roadmap" && <div className="module-tabs" role="tablist">{meta.tabs.map((value) => <button role="tab" aria-selected={activeTab === value} key={value} className={activeTab === value ? "module-tab active-tab" : "module-tab"} onClick={() => onTabChange(value)}>{value}</button>)}</div>}
-    {!project ? <div className="panel blank-module"><FolderKanban size={25}/><h3>Create a project first</h3><p>Planning work is attached to a project workspace.</p></div> : moduleId === "roadmap" ? <AiRoadmapPlanner project={project} onSave={(roadmap: ProjectRoadmap) => { const completedTasks = roadmap.tasks.filter((task) => task.status === "done").length; const progress = roadmap.tasks.length ? Math.round((completedTasks / roadmap.tasks.length) * 100) : 0; onUpdateProject({ roadmap, progress, status: progress === 100 && roadmap.tasks.length ? "Completed" : progress > 0 ? "In progress" : project.status === "Completed" ? "Planning" : project.status }); }} onApplyTasks={(newItems: PlanningItem[]) => onUpdateProject({ items: [...project.items, ...newItems] })} onGoToBrief={onGoToBrief}/> : architectureModules.includes(moduleId) ? <div className="module-content-grid">
-      <section className="panel module-main-panel">
-        <PlanningStudio
-          moduleId={moduleId}
-          items={items}
-          notes={notes}
-          onNotesChange={(value) => onUpdateProject({ notes: { ...project.notes, [moduleId]: value } })}
-          onAdd={addStudioItem}
-          onUpdate={updateStudioItem}
-          onRemove={onRemoveItem}
-          onOpenRoadmap={onGoToRoadmap}
-        />
-      </section>
-      <aside className="module-side-column">
-        <section className="panel side-info-panel"><div className="side-panel-title"><Sparkles size={16}/><strong>Architecture guidance</strong></div><p>Use the specialist workspace to map the structure, relationships, information flows and integrations. The project planning area remains a form-based workspace.</p><div className="prompt-list">{meta.prompts.map((prompt) => <div className="prompt-line" key={prompt}><Check size={13}/>{prompt}</div>)}</div><button className="text-button" onClick={onAsk}>Discuss with Qwen <ArrowUpRight size={13}/></button></section>
-        <section className="panel side-info-panel"><div className="side-panel-title"><Gauge size={16}/><strong>Architecture progress</strong></div><div className="quality-placeholder"><div className="quality-ring"><span>{Math.min(100, items.length * 20)}%</span></div><div><strong>{items.length ? "Architecture taking shape" : "Ready to map"}</strong><small>{items.length ? items.length + " elements captured. Continue refining the relationships." : "Add the first component, flow or integration."}</small></div></div><div className="progress-track"><span style={{width: Math.min(100, items.length * 20) + "%"}}/></div></section>
-      </aside>
-    </div> : <ProjectPlanningForms
+    {!project ? <div className="panel blank-module"><FolderKanban size={25}/><h3>Create a project first</h3><p>Planning work is attached to a project workspace.</p></div> : moduleId === "roadmap" ? <AiRoadmapPlanner project={project} onSave={(roadmap: ProjectRoadmap) => { const completedTasks = roadmap.tasks.filter((task) => task.status === "done").length; const progress = roadmap.tasks.length ? Math.round((completedTasks / roadmap.tasks.length) * 100) : 0; onUpdateProject({ roadmap, progress, status: progress === 100 && roadmap.tasks.length ? "Completed" : progress > 0 ? "In progress" : project.status === "Completed" ? "Planning" : project.status }); }} onApplyTasks={(newItems: PlanningItem[]) => onUpdateProject({ items: [...project.items, ...newItems] })} onGoToBrief={onGoToBrief}/>  <ProjectPlanningForms
       moduleId={moduleId}
       project={project}
       activeTab={activeTab}
