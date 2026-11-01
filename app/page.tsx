@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { navigation, moduleMeta } from "@/lib/navigation";
 import { readProjects, writeProjects } from "@/lib/storage";
-import type { ModuleId, PlanningItem, Project, ProjectStatus } from "@/lib/types";
+import { AiProjectIntake } from "@/components/ai-project-intake";
+import type { IntakeAnalysis, ModuleId, PlanningItem, Project, ProjectIntake, ProjectStatus } from "@/lib/types";
 
 type AiState = "checking" | "ready" | "model-missing" | "offline";
 type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -303,6 +304,18 @@ function ModuleWorkspace({ moduleId, project, activeTab, onTabChange, onBack, on
     {!project ? <div className="panel blank-module"><FolderKanban size={25}/><h3>Create a project first</h3><p>Planning work is attached to a project workspace.</p></div> : <div className="module-content-grid">
       <section className="panel module-main-panel">
         <div className="panel-heading"><div><h3>{activeTab}</h3><p>{items.length} planning item{items.length === 1 ? "" : "s"} in this section</p></div><button className="button button-secondary button-small" onClick={onCreateItem}><Plus size={14}/> Add item</button></div>
+        {moduleId === "brief" && <AiProjectIntake project={project} onSave={(intake: ProjectIntake) => onUpdateProject({ intake, objective: project.objective || intake.analysis.desiredOutcome })} onApplyWorkstreams={(analysis: IntakeAnalysis) => {
+          const existing = new Set(project.items.filter((item) => item.moduleId === "work-breakdown").map((item) => item.title.toLowerCase()));
+          const proposed = analysis.workstreams.flatMap((stream) => stream.tasks.map((task) => ({
+            id: crypto.randomUUID(),
+            moduleId: "work-breakdown" as const,
+            title: task,
+            detail: "Workstream: " + stream.title + (stream.goal ? ". " + stream.goal : ""),
+            createdAt: new Date().toISOString()
+          }))).filter((item) => !existing.has(item.title.toLowerCase())).slice(0, 30);
+          if (!proposed.length) return;
+          onUpdateProject({ items: [...project.items, ...proposed] });
+        }}/>}
         {moduleId === "brief" && <div className="objective-editor"><label htmlFor="project-objective">PROJECT OBJECTIVE</label><textarea id="project-objective" value={project.objective} onChange={(event) => onUpdateProject({ objective: event.target.value })} placeholder="Describe the need, desired outcome and who benefits..."/></div>}
         <div className="plan-item-list">
           {items.map((item,index) => <article className="plan-item" key={item.id}><div className="plan-item-number">{String(index + 1).padStart(2,"0")}</div><div className="plan-item-body"><div className="plan-item-top"><strong>{item.title}</strong><span className="item-tag">{meta.shortLabel}</span></div>{item.detail && <p>{item.detail}</p>}

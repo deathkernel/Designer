@@ -14,6 +14,7 @@ type ChatInput = {
     type?: string;
     objective?: string;
     status?: string;
+    intake?: { idea?: string; analysis?: { executiveSummary?: string; problemStatement?: string; desiredOutcome?: string; objectives?: { title?: string; successMeasure?: string }[]; openQuestions?: { question?: string; priority?: string }[] } };
     items?: { title?: string; detail?: string; moduleId?: string }[];
   } | null;
 };
@@ -37,6 +38,12 @@ export async function POST(request: Request) {
     "Type: " + (project.type || "Not specified"),
     "Objective: " + (project.objective || "Not yet defined"),
     "Status: " + (project.status || "Planning"),
+    "Intake idea: " + (project.intake?.idea || "Not captured"),
+    "Intake summary: " + (project.intake?.analysis?.executiveSummary || "No AI intake analysis saved"),
+    "Problem statement: " + (project.intake?.analysis?.problemStatement || "Not yet clarified"),
+    "Desired outcome from intake: " + (project.intake?.analysis?.desiredOutcome || "Not yet clarified"),
+    "Objectives: " + ((project.intake?.analysis?.objectives ?? []).map((item) => item.title + " — " + item.successMeasure).join("; ") || "None captured"),
+    "Open clarification questions: " + ((project.intake?.analysis?.openQuestions ?? []).map((item) => "[" + item.priority + "] " + item.question).join("; ") || "None captured"),
     "Current work items: " + ((project.items ?? []).slice(0, 40).map((item) =>
       "- [" + (item.moduleId || "general") + "] " + (item.title || "Untitled") + ": " + (item.detail || "No detail")
     ).join("\n") || "None yet")

@@ -23,6 +23,67 @@ export type PlanningItem = {
   failure?: string;
 };
 
+export type IntakePriority = "high" | "medium" | "low";
+export type IntakeConfidence = "low" | "medium" | "high";
+
+export type IntakeObjective = {
+  title: string;
+  detail: string;
+  successMeasure: string;
+};
+
+export type IntakeDeliverable = {
+  title: string;
+  description: string;
+  acceptanceCriteria: string[];
+};
+
+export type IntakeWorkstream = {
+  title: string;
+  goal: string;
+  tasks: string[];
+};
+
+export type IntakeRisk = {
+  title: string;
+  likelihood: string;
+  impact: string;
+  mitigation: string;
+};
+
+export type IntakeQuestion = {
+  question: string;
+  whyItMatters: string;
+  priority: IntakePriority;
+};
+
+export type IntakeAnalysis = {
+  executiveSummary: string;
+  problemStatement: string;
+  desiredOutcome: string;
+  stakeholders: string[];
+  objectives: IntakeObjective[];
+  deliverables: IntakeDeliverable[];
+  workstreams: IntakeWorkstream[];
+  assumptions: string[];
+  constraints: string[];
+  risks: IntakeRisk[];
+  openQuestions: IntakeQuestion[];
+  recommendedNextSteps: string[];
+  evidenceNeeded: string[];
+  confidence: IntakeConfidence;
+};
+
+export type ProjectIntake = {
+  idea: string;
+  context: string;
+  deadline: string;
+  budget: string;
+  answers: Record<string, string>;
+  analysis: IntakeAnalysis;
+  updatedAt: string;
+};
+
 export type Project = {
   id: string;
   name: string;
@@ -33,6 +94,7 @@ export type Project = {
   updatedAt: string;
   notes: Partial<Record<ModuleId, string>>;
   items: PlanningItem[];
+  intake?: ProjectIntake;
 };
 
 export type NavItem = {
