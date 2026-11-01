@@ -65,3 +65,86 @@
 .diagram-empty h3{margin:5px 0 0;color:#eceaf5;font:600 14px Manrope}
 .diagram-empty p{margin:0;color:#8d97a5;font-size:10px}
 @media(max-width:600px){.canvas-caption{align-items:flex-start;flex-direction:column;justify-content:center;padding:9px 11px;gap:5px}.schema-flow{height:520px;min-height:420px}.diagram-table-node{width:225px}}
+
+
+/* ProjectForge — premium minimal workflow workspace */
+.editor-shell{background:#0b0d12}
+.editor-topbar{height:54px;padding:0 20px;background:#0d1016;border-bottom:1px solid #202631}
+.editor-sidebar{width:176px;padding:19px 10px;background:#0e1117;border-right:1px solid #202631}
+.editor-body{grid-template-columns:176px minmax(0,1fr);min-height:calc(100vh - 54px)}
+.editor-side-title{padding:0 10px 12px;font-size:8px;letter-spacing:1.2px}
+.editor-side-item{min-height:34px;padding:0 10px;gap:9px;border-radius:6px;color:#929baa;font-size:10px}
+.editor-side-item.active{background:#1d1b2a;color:#d6ceff}
+.editor-side-item:hover{background:#191e27;color:#f0f2f7}
+.editor-side-bottom{padding:12px 10px;border-color:#242b36}
+.editor-side-bottom span{font-size:8px}
+.editor-side-bottom small{line-height:1.5}
+.editor-content{min-width:0;padding:22px 25px 18px}
+.editor-heading{align-items:center;margin-bottom:16px}
+.editor-heading .eyebrow{font-size:8px;letter-spacing:1.3px}
+.editor-heading h1{margin:5px 0 3px;font-size:21px;letter-spacing:-.7px}
+.editor-heading p{color:#8993a1;font-size:10px}
+.editor-heading>.primary{min-height:33px;padding:0 11px;font-size:10px}
+.editor-tabs{gap:3px;border-bottom:1px solid #242b36}
+.editor-tabs button{min-height:36px;padding:0 12px;border-bottom-width:1px;color:#8993a1;font-size:10px}
+.editor-tabs button.active{border-bottom-color:#b6aaff;color:#e0d9ff}
+.table-count{font-size:8px;letter-spacing:.8px}
+.schema-workspace{padding-top:14px}
+.table-grid{gap:11px}
+.table-card{border-color:#2b323e;border-radius:8px;background:#11161e;box-shadow:0 5px 18px #0002}
+.table-card-head{background:#171d27;border-color:#2a313d}
+.column-row{border-color:#232b36}
+.relations-panel{background:#10151c;border-color:#252d39;border-radius:8px}
+.validation{background:#10151c;border-color:#252d39;border-radius:8px}
+.schema-canvas{position:relative;margin-top:12px;overflow:hidden;border:1px solid #252d39;border-radius:9px;background:#0d1118;box-shadow:0 12px 35px #0002}
+.canvas-caption{min-height:42px;padding:0 13px;background:#111720;border-bottom:1px solid #242c38;color:#8994a3;font:8px "DM Mono";letter-spacing:.65px}
+.canvas-caption-copy,.canvas-actions{display:flex;align-items:center;gap:13px}
+.canvas-caption-copy>span:last-child{color:#a0a9b6}
+.canvas-caption-copy b,.canvas-actions b{padding:0 3px;color:#525d6b}
+.canvas-live{display:flex;align-items:center;gap:7px;color:#c7bedf}
+.canvas-live i{width:6px;height:6px;border-radius:50%;background:#8bc9a5;box-shadow:0 0 7px #8bc9a555}
+.canvas-actions>span{color:#788392;font-size:8px;letter-spacing:0}
+.canvas-actions button,.canvas-first-node button{height:28px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;border:1px solid #45405f;border-radius:6px;background:#28243a;color:#d6ceff;font-size:9px;font-weight:600}
+.canvas-actions button:hover,.canvas-first-node button:hover{border-color:#8d7fd0;background:#332d4a}
+.schema-flow{position:relative;height:calc(100vh - 215px);min-height:510px;max-height:900px;background-color:#0d1118;background-image:radial-gradient(#303744 0.8px,transparent 0.8px);background-size:22px 22px}
+.schema-flow .react-flow__background{opacity:.32}
+.schema-flow .react-flow__pane{cursor:grab}
+.schema-flow .react-flow__pane:active{cursor:grabbing}
+.schema-flow .react-flow__controls{left:14px;bottom:14px;overflow:hidden;border:1px solid #303947;border-radius:7px;background:#151b24;box-shadow:0 5px 18px #0005}
+.schema-flow .react-flow__controls-button{width:29px;height:29px;border-bottom:1px solid #303947;background:#151b24;fill:#c4cbd6;color:#c4cbd6}
+.schema-flow .react-flow__controls-button:hover{background:#252d3a}
+.schema-flow .react-flow__minimap{right:13px;bottom:13px;overflow:hidden;border:1px solid #303947;border-radius:7px;background:#151b24;box-shadow:0 5px 18px #0005}
+.schema-flow .react-flow__edge-path{stroke:#a89ae8;stroke-width:1.8}
+.schema-flow .react-flow__edge.selected .react-flow__edge-path{stroke:#d0c5ff;stroke-width:2.3}
+.schema-flow .react-flow__edge-text{fill:#dcd5f7;font:9px "DM Mono"}
+.schema-flow .react-flow__edge-textbg{fill:#171c26}
+.diagram-table-node{width:260px;border:1px solid #394352;border-radius:9px;background:#151b24;box-shadow:0 9px 26px #0006;transition:border-color .15s,box-shadow .15s}
+.diagram-table-node.selected{border-color:#a99aff;box-shadow:0 0 0 2px #a99aff26,0 12px 30px #0008}
+.diagram-node-head{height:39px;padding:0 11px;background:#1b2330;border-bottom:1px solid #303947}
+.diagram-node-head>span{width:22px;height:22px;background:#302b45;color:#c8beff}
+.diagram-node-head strong{font-size:10px;letter-spacing:.1px}
+.diagram-node-head small{font-size:8px;color:#8490a0}
+.diagram-node-column{min-height:30px;padding:0 11px;border-bottom:1px solid #252e3a}
+.diagram-column-name{font-size:9px;color:#dce2eb}
+.diagram-column-type{font-size:8px;color:#98a3b2}
+.diagram-column-rules{font-size:8px;color:#b9adff}
+.diagram-handle{width:9px;height:9px;border:2px solid #c7bdff;background:#7668b8;box-shadow:0 0 0 3px #7668b822}
+.canvas-first-node{position:absolute;top:50%;left:50%;z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:240px;padding:20px 24px;transform:translate(-50%,-50%);border:1px solid #343d4b;border-radius:10px;background:#151b24;box-shadow:0 16px 40px #0008;text-align:center;pointer-events:auto}
+.canvas-first-node>span{width:38px;height:38px;display:grid;place-items:center;border:1px solid #51486d;border-radius:10px;background:#29243b;color:#c4baff}
+.canvas-first-node strong{color:#e9eaf0;font-size:11px}
+.canvas-first-node p{margin:0 0 4px;color:#8994a3;font-size:9px}
+.diagram-empty{display:none}
+@media(max-width:760px){
+ .editor-sidebar{display:none}
+ .editor-body{grid-template-columns:1fr}
+ .editor-content{padding:18px 12px}
+ .schema-flow{height:calc(100vh - 230px);min-height:440px}
+ .canvas-caption{align-items:flex-start;flex-direction:row;gap:8px;padding:7px 9px}
+ .canvas-actions>span{display:none}
+ .canvas-caption-copy,.canvas-actions{gap:7px}
+}
+@media(max-width:480px){
+ .canvas-caption{flex-wrap:wrap}
+ .canvas-caption-copy{width:100%;justify-content:space-between}
+ .canvas-actions{width:100%;justify-content:space-between}
+}
