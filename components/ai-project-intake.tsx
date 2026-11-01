@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { AlertTriangle, ArrowRight, Check, CircleHelp, Clock3, FileCheck2, LoaderCircle, RefreshCw, Sparkles, Target, Users, WandSparkles } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, CircleHelp, Clock3, FileCheck2, LoaderCircle, Plus, RefreshCw, Sparkles, Target, Users, WandSparkles } from "lucide-react";
 import type { IntakeAnalysis, Project, ProjectIntake } from "@/lib/types";
 
 type Props = {

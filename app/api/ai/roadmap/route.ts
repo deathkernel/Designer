@@ -21,6 +21,7 @@ type RoadmapRequest = {
     idea?: string;
     context?: string;
     deadline?: string;
+    budget?: string;
     answers?: Record<string, string>;
     analysis?: {
       executiveSummary?: string;

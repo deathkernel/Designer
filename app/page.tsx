@@ -5,7 +5,7 @@ import {
   ArrowRight, ArrowUpRight, Bot, Boxes, CalendarDays, Check, ChevronDown,
   ChevronRight, CircleHelp, ClipboardList, FolderKanban, Gauge, GitMerge,
   HardDrive, Layers3, ListTodo, Menu, Plus, Search, Send, Settings2,
-  ShieldCheck, Sparkles, Target, Trash2, Workflow, X, type LucideIcon
+  ShieldCheck, Sparkles, Target, Trash2, Workflow, X, PlugZap, type LucideIcon
 } from "lucide-react";
 import { navigation, moduleMeta } from "@/lib/navigation";
 import { readProjects, writeProjects } from "@/lib/storage";
